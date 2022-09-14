@@ -1,10 +1,24 @@
 import './style.css';
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
-import { loadModel } from './components/loadModels.js';
-import { setupModel } from './components/setupModel.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/gltfloader';
 
 function main() {
+
+    // Loading
+    var mesh;
+    const loader = new GLTFLoader();
+    loader.load(
+        // resource URL
+        '/models/DexLab_LOGO.glb',
+        // runs when resource loaded
+        function (glb) {
+            mesh = glb.scene
+            mesh.scale.set(0.04, 0.04, 0.04)
+            mesh.position.set(0, -.5, -3)
+            scene.add(mesh)
+        }
+    )
     
     // Debug
     const gui = new dat.GUI();
@@ -145,7 +159,13 @@ function main() {
     };
     
     window.addEventListener('scroll', onScrollUpdate);
+
+
     
+    //
+    // Spacer
+    //
+
     const clock = new THREE.Clock();
     
     const tick = () =>
@@ -156,12 +176,14 @@ function main() {
         const elapsedTime = clock.getElapsedTime();
         
         // Update objects
-        
-        // console.log(logo)
-        
-        // logo.rotation.y += .5 * (targetX - logo.rotation.y)
-        // logo.rotation.x += .05 * (targetY - logo.rotation.x)
-        // logo.rotation.z += .05 * (targetY - logo.rotation.x)
+        if(mesh){
+            mesh.rotation.y += .5 * (targetX - mesh.rotation.y)
+            mesh.rotation.x += .05 * (targetY - mesh.rotation.x)
+            //mesh.rotation.z += .05 * (targetY - mesh.rotation.x)
+
+            mesh.position.x = 2 * targetX
+            mesh.position.y = -2 * targetY
+        }
         
         particlesMesh.rotation.y = -(.004 * elapsedTime);
         
