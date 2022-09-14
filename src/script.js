@@ -11,45 +11,48 @@ function main() {
 
     // Debug
     const gui = new dat.GUI();
-    
+
     // GUI
     const light1 = gui.addFolder('Light 1')
-    
+
     // Canvas
     const canvas = document.querySelector('canvas.webgl');
-    
+
     // Scene
     const scene = new THREE.Scene();
-    
-    var logo;
-    gltfLoader.load(
-        // resource URL
-        '/models/DexLab_LOGO.glb',
-        // executes when resource loaded
-        function (mesh) {
-            logo = mesh.scene;
-            logo.position.set(0,-.5,-3)
-            logo.scale.set(0.04, 0.04, 0.04)
-            scene.add(logo)
-        }
-        )
-        
+
+    // var shape;
+    // gltfLoader.load(
+    //     // resource URL
+    //     '/models/DexLab_LOGO.glb',
+    //     // executes when resource loaded
+    //     function (mesh) {
+    //         shape = mesh.scene;
+    //         shape.position.set(0,-.5,-3)
+    //         shape.scale.set(0.04, 0.04, 0.04)
+    //         scene.add(shape)
+    //     }
+    // )
+
     // Raycasting
     const raycaster = new THREE.Raycaster()
+    raycaster.layers.set(1)
     let INTERSECTED;
 
     // Objects
+    const shapeGeometry = new THREE.IcosahedronGeometry();
+
     const particlesGeometry = new THREE.BufferGeometry;
     const particlesCnt = 5000;
-    
+
     const posArray = new Float32Array(particlesCnt * 3);
-    
-    for(let i = 0; i < particlesCnt *3; i++){
-    // posArray[i] = Math.random()
-    // posArray[i] = Math.random() - .5
-    posArray[i] = (Math.random() - .5) * 40
+
+    for(let i = 0; i < particlesCnt * 3; i++){
+        // posArray[i] = Math.random()
+        // posArray[i] = Math.random() - .5
+        posArray[i] = (Math.random() - .5) * 40
     };
-    
+
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     
     // Materials
@@ -62,14 +65,22 @@ function main() {
         }
     );
 
+    const shapeMaterial = new THREE.MeshStandardMaterial({
+        color: 0x191919,
+        metalness: 0.7,
+        roughness: 0.7
+    })
+
     // Mesh
-    //const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    const shape = new THREE.Mesh(shapeGeometry, shapeMaterial);
+    shape.layers.enable(1);
     
-    //scene.add(particlesMesh);
+    scene.add(particlesMesh, shape);
     
     // Lights
     
-    const pointLight = new THREE.PointLight(0x00ffff, 2)
+    const pointLight = new THREE.PointLight(0x888888, 2)
     // pointLight.position.x = 2
     // pointLight.position.y = 3
     // pointLight.position.z = 4
@@ -83,7 +94,7 @@ function main() {
     light1.add(pointLight, 'intensity').min(0).max(10).step(0.01)
     
     const light1Color = {
-        color: 0xff0000
+        color: 0x888888
     }
 
     light1.addColor(light1Color, 'color')
@@ -144,6 +155,7 @@ function main() {
      */
     
     document.addEventListener('mousemove', onDocumentMouseMove);
+    window.addEventListener('pointermove', onPointerMove);
     
     let mouseX = 0;
     let mouseY = 0;
@@ -154,32 +166,37 @@ function main() {
     const windowX = window.innerWidth * 0.5;
     const windowY = window.innerHeight * 0.5;
     
-    var camMouse = new THREE.Vector2()
-
     function onDocumentMouseMove ( event ) {
         mouseX = (event.clientX - windowX)
         mouseY = (event.clientY - windowY)
-
-        camMouse.setX(( event.clientX / window.innerWidth ) * 2 - 1)
-        camMouse.setY(( event.clientY / window.innerHeight ) * 2 + 1)
     };
-    
-    const onScrollUpdate = ( event ) => {
-    };
-    
-    window.addEventListener('scroll', onScrollUpdate);
 
-    window.onclick = onClickEvent;
+    var pointer = new THREE.Vector2()
 
-    function onClickEvent(){
-        console.log(camMouse)
-        raycaster.setFromCamera (camMouse, camera)
+    function onPointerMove ( event ) {
+        pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    }
+    
+    // const onScrollUpdate = ( event ) => {
+    // };
+    
+    // window.addEventListener('scroll', onScrollUpdate);
+
+    //window.onclick = onClickEvent;
+
+    window.addEventListener('mousedown', onClickEvent)
+
+    function onClickEvent( event ){
+        // console.log(pointer);
+        raycaster.setFromCamera(pointer, camera)
         const intersects = raycaster.intersectObjects( scene.children, false );
         if( intersects.length > 0 ) {
             if( INTERSECTED != intersects[0].object) {
-                console.log(intersects[0].object)
+                INTERSECTED = intersects[0].object;
             }
         }
+        console.log(intersects)
     }
     
     //
@@ -187,7 +204,7 @@ function main() {
     //
 
     const clock = new THREE.Clock();
-    
+
     const tick = () =>
     {
         targetX = mouseX * 0.001;
@@ -196,16 +213,16 @@ function main() {
         const elapsedTime = clock.getElapsedTime();
         
         // Update objects
-        if(logo){
-            logo.rotation.y += .5 * (targetX - logo.rotation.y)
-            logo.rotation.x += .05 * (targetY - logo.rotation.x)
+        if(shape){
+            shape.rotation.y += .2 * (targetX - shape.rotation.y)
+            shape.rotation.x += .02 * (targetY - shape.rotation.x)
             //mesh.rotation.z += .05 * (targetY - mesh.rotation.x)
 
-            logo.position.x = 2 * targetX
-            logo.position.y = (-2 * targetY) - 0.5
+            // shape.position.x = .5 * targetX
+            // shape.position.y = (-.5 * targetY)
         }
-        
-        // particlesMesh.rotation.y = -(.004 * elapsedTime);
+
+        particlesMesh.rotateY(0.0001)
         
         // Update Orbital Controls
         //controls.update()
