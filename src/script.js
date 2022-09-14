@@ -1,25 +1,14 @@
 import './style.css';
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
-import { GLTFLoader } from 'three/examples/jsm/loaders/gltfloader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { InstancedInterleavedBuffer } from 'three';
 
 function main() {
-
-    // Loading
-    var mesh;
-    const loader = new GLTFLoader();
-    loader.load(
-        // resource URL
-        '/models/DexLab_LOGO.glb',
-        // runs when resource loaded
-        function (glb) {
-            mesh = glb.scene
-            mesh.scale.set(0.04, 0.04, 0.04)
-            mesh.position.set(0, -.5, -3)
-            scene.add(mesh)
-        }
-    )
     
+    // Loaders
+    const gltfLoader = new GLTFLoader();
+
     // Debug
     const gui = new dat.GUI();
     
@@ -32,6 +21,23 @@ function main() {
     // Scene
     const scene = new THREE.Scene();
     
+    var logo;
+    gltfLoader.load(
+        // resource URL
+        '/models/DexLab_LOGO.glb',
+        // executes when resource loaded
+        function (mesh) {
+            logo = mesh.scene;
+            logo.position.set(0,-.5,-3)
+            logo.scale.set(0.04, 0.04, 0.04)
+            scene.add(logo)
+        }
+        )
+        
+    // Raycasting
+    const raycaster = new THREE.Raycaster()
+    let INTERSECTED;
+
     // Objects
     const particlesGeometry = new THREE.BufferGeometry;
     const particlesCnt = 5000;
@@ -57,9 +63,9 @@ function main() {
     );
 
     // Mesh
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    //const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     
-    scene.add(particlesMesh);
+    //scene.add(particlesMesh);
     
     // Lights
     
@@ -148,22 +154,36 @@ function main() {
     const windowX = window.innerWidth * 0.5;
     const windowY = window.innerHeight * 0.5;
     
-    function onDocumentMouseMove(event) {
+    var camMouse = new THREE.Vector2()
+
+    function onDocumentMouseMove ( event ) {
         mouseX = (event.clientX - windowX)
         mouseY = (event.clientY - windowY)
+
+        camMouse.setX(( event.clientX / window.innerWidth ) * 2 - 1)
+        camMouse.setY(( event.clientY / window.innerHeight ) * 2 + 1)
     };
     
-    const onScrollUpdate = (event) => {
-        sphere.position.y = window.scrollY * 0.001
-        sphere.position.z = window.scrollY * 0.003
+    const onScrollUpdate = ( event ) => {
     };
     
     window.addEventListener('scroll', onScrollUpdate);
 
+    window.onclick = onClickEvent;
 
+    function onClickEvent(){
+        console.log(camMouse)
+        raycaster.setFromCamera (camMouse, camera)
+        const intersects = raycaster.intersectObjects( scene.children, false );
+        if( intersects.length > 0 ) {
+            if( INTERSECTED != intersects[0].object) {
+                console.log(intersects[0].object)
+            }
+        }
+    }
     
     //
-    // Spacer
+    // UPDATE
     //
 
     const clock = new THREE.Clock();
@@ -176,16 +196,16 @@ function main() {
         const elapsedTime = clock.getElapsedTime();
         
         // Update objects
-        if(mesh){
-            mesh.rotation.y += .5 * (targetX - mesh.rotation.y)
-            mesh.rotation.x += .05 * (targetY - mesh.rotation.x)
+        if(logo){
+            logo.rotation.y += .5 * (targetX - logo.rotation.y)
+            logo.rotation.x += .05 * (targetY - logo.rotation.x)
             //mesh.rotation.z += .05 * (targetY - mesh.rotation.x)
 
-            mesh.position.x = 2 * targetX
-            mesh.position.y = -2 * targetY
+            logo.position.x = 2 * targetX
+            logo.position.y = (-2 * targetY) - 0.5
         }
         
-        particlesMesh.rotation.y = -(.004 * elapsedTime);
+        // particlesMesh.rotation.y = -(.004 * elapsedTime);
         
         // Update Orbital Controls
         //controls.update()
