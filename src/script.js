@@ -2,7 +2,6 @@ import './style.css';
 import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { InstancedInterleavedBuffer } from 'three';
 
 function main() {
     
@@ -10,10 +9,10 @@ function main() {
     const gltfLoader = new GLTFLoader();
 
     // Debug
-    const gui = new dat.GUI();
+    //const gui = new dat.GUI();
 
     // GUI
-    const light1 = gui.addFolder('Light 1')
+    //const light1 = gui.addFolder('Light 1')
 
     // Canvas
     const canvas = document.querySelector('canvas.webgl');
@@ -66,7 +65,7 @@ function main() {
     );
 
     const shapeMaterial = new THREE.MeshStandardMaterial({
-        color: 0x191919,
+        color: 0x232323,
         metalness: 0.7,
         roughness: 0.7
     })
@@ -81,26 +80,23 @@ function main() {
     // Lights
     
     const pointLight = new THREE.PointLight(0x888888, 2)
-    // pointLight.position.x = 2
-    // pointLight.position.y = 3
-    // pointLight.position.z = 4
     pointLight.position.set(2,2.3,0.85)
-    pointLight.intensity = 2
+    pointLight.intensity = 10
     scene.add(pointLight)
     
-    light1.add(pointLight.position, 'x').min(-6).max(6).step(0.01)
-    light1.add(pointLight.position, 'y').min(-3).max(3).step(0.01)
-    light1.add(pointLight.position, 'z').min(-3).max(3).step(0.01)
-    light1.add(pointLight, 'intensity').min(0).max(10).step(0.01)
+    // light1.add(pointLight.position, 'x').min(-6).max(6).step(0.01)
+    // light1.add(pointLight.position, 'y').min(-3).max(3).step(0.01)
+    // light1.add(pointLight.position, 'z').min(-3).max(3).step(0.01)
+    // light1.add(pointLight, 'intensity').min(0).max(10).step(0.01)
     
     const light1Color = {
         color: 0x888888
     }
 
-    light1.addColor(light1Color, 'color')
-    .onChange(() => {
-        pointLight.color.set(light1Color.color)
-    })
+    // light1.addColor(light1Color, 'color')
+    // .onChange(() => {
+    //     pointLight.color.set(light1Color.color)
+    // })
 
     /**
      * Sizes
@@ -156,6 +152,19 @@ function main() {
     
     document.addEventListener('mousemove', onDocumentMouseMove);
     window.addEventListener('pointermove', onPointerMove);
+    //window.addEventListener('mousedown', onClickEvent);
+    
+    let scrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
+
+        camera.position.y = - scrollY * 0.005
+    })
+
+    let currentCamPos = camera.position;
+
+    console.log(currentCamPos)
     
     let mouseX = 0;
     let mouseY = 0;
@@ -177,27 +186,19 @@ function main() {
         pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     }
-    
-    // const onScrollUpdate = ( event ) => {
-    // };
-    
-    // window.addEventListener('scroll', onScrollUpdate);
 
-    //window.onclick = onClickEvent;
 
-    window.addEventListener('mousedown', onClickEvent)
-
-    function onClickEvent( event ){
-        // console.log(pointer);
-        raycaster.setFromCamera(pointer, camera)
-        const intersects = raycaster.intersectObjects( scene.children, false );
-        if( intersects.length > 0 ) {
-            if( INTERSECTED != intersects[0].object) {
-                INTERSECTED = intersects[0].object;
-            }
-        }
-        console.log(intersects)
-    }
+    // function onClickEvent( event ){
+    //     // console.log(pointer);
+    //     raycaster.setFromCamera(pointer, camera)
+    //     const intersects = raycaster.intersectObjects( scene.children, false );
+    //     if( intersects.length > 0 ) {
+    //         if( INTERSECTED != intersects[0].object) {
+    //             INTERSECTED = intersects[0].object;
+    //         }
+    //     }
+    //     console.log(intersects)
+    // }
     
     //
     // UPDATE

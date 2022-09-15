@@ -7,36 +7,61 @@
 html,
 body
 {
+    /* position: fixed;
     height: 100vh;
+    width: 100vw; */
     font-family: 'Arial';
-    background: rgb(14,14,14);
+    background: rgb(24,24,24);
+    font-size: 100%;
 }
 
 .webgl
 {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     outline: none;
-    mix-blend-mode: exclusion;
+    mix-blend-mode: normal;
 }
 
 .container
 {
-    height: 100vh;
+    height: 90vh;
     display: grid;
     place-items: center;
 }
 
 h1 {
-    font-size: 8rem;
+    font-size: 9vw;
     text-transform: uppercase;
     color: white;
     text-align: center;
+    z-index: 1;
+    mix-blend-mode: exclusion;
+    user-select: none;
 }
-h2 {
-    font-size: 5rem;
-    text-transform: uppercase;
+
+.menu {
+    display: grid;
+    color: white;
+    place-items: center;
+}
+
+ul{
+    padding-top: 2%;
+    list-style-type: none;
+}
+
+li {
+    display: inline;
     color: white;
     text-align: center;
+    padding: 30px 25px;
+    text-decoration: none;
+    background-color: transparent;
+    font-size: 1.2vw;
+}
+p {
+    text-align: center;
+    color: white;
 }
