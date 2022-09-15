@@ -6,6 +6,9 @@ Download [Node.js](https://nodejs.org/en/download/).
 Run this followed commands:
 
 ``` bash
+# Make sure you are running these commands from the actual directory. eg if my project in in D:\ThreeJS\threejs-dc-1
+cd D:\ThreeJS\threejs-dc-1
+
 # Install dependencies (only the first time)
 npm install
 
