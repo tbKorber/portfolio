@@ -437,13 +437,17 @@ function main() {
         const elapsedTime = clock.getElapsedTime();
         
         // Update objects
-        if(shape){
-            shape.rotation.y += .2 * (targetX - shape.rotation.y)
-            shape.rotation.x += .02 * (targetY - shape.rotation.x)
-            shape.position.z = -(2.5 * targetY) - .5 
-
-            // shape.position.x = .5 * targetX
-            // shape.position.y = (-.5 * targetY)
+        switch(currentPage){
+            case pageStates.About:
+                if(shape){
+                    shape.rotation.y += .2 * (targetX - shape.rotation.y)
+                    shape.rotation.x += .02 * (targetY - shape.rotation.x)
+                    shape.position.z = -(1.8 * targetY) - .5 
+        
+                    // shape.position.x = .5 * targetX
+                    // shape.position.y = (-.5 * targetY)
+                }
+                break;
         }
 
 
