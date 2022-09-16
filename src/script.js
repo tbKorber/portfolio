@@ -192,6 +192,7 @@ function main() {
 
     document.addEventListener('keypress', function ( event ) {
         switch(event.code){
+            case 'KeyH':
             case 'KeyA':
                 switch(currentPage[0]){
                     case 'Trevor\nKörber':
@@ -208,6 +209,7 @@ function main() {
                         break;
                 }
                 break;
+            case 'KeyL':
             case 'KeyD':
                 switch(currentPage[0]){
                     case 'Trevor\nKörber':
