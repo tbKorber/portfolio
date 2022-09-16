@@ -90,6 +90,7 @@ function main() {
     // Mesh
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     const shape = new THREE.Mesh(shapeGeometry, shapeMaterial);
+    shape.position.set(0,0,-.5)
 
     const Menu = new THREE.Mesh(marker, transparentMat);
     Menu.position.set(0, 1.35, 0)
@@ -229,14 +230,59 @@ function main() {
         }
     })
 
+    // let touchX;
+
+    // document.addEventListener('touchstart', function (event) {
+    //     touchX = mouseX;
+    // })
+
+    // document.addEventListener('touchend', function (event) {
+    //     let delta = mouseX - touchX
+    //     let absoluteVal = Math.abs(delta);
+    //     if(absoluteVal > 120){
+    //         if(delta > 0){
+    //             switch(currentPage[0]){
+    //                 case 'Trevor\nKörber':
+    //                     NavigateMenu(pageStates.Showcase);
+    //                     showcaseMenuDiv.style.color = 'white';
+    //                     break;
+    //                 case 'Contact':
+    //                     NavigateMenu(pageStates.About);
+    //                     aboutMenuDiv.style.color = 'white';
+    //                     break;
+    //                 case 'Showcase':
+    //                     NavigateMenu(pageStates.Contact);
+    //                     contactMenuDiv.style.color = 'white';
+    //                     break;
+    //             }
+    //         }
+    //         else{
+    //             switch(currentPage[0]){
+    //                 case 'Trevor\nKörber':
+    //                     NavigateMenu(pageStates.Contact);
+    //                     contactMenuDiv.style.color = 'white';
+    //                     break;
+    //                 case 'Contact':
+    //                     NavigateMenu(pageStates.Showcase);
+    //                     showcaseMenuDiv.style.color = 'white';
+    //                     break;
+    //                 case 'Showcase':
+    //                     NavigateMenu(pageStates.About);
+    //                     aboutMenuDiv.style.color = 'white';
+    //                     break;
+    //             }
+    //         }
+    //     }
+    // })
+
     const showcaseMenuDiv = document.createElement( 'div' );
     showcaseMenuDiv.className = 'menu';
     showcaseMenuDiv.textContent = 'SHOWCASE';
     showcaseMenuDiv.style.marginTop = '1em';
-    showcaseMenuDiv.style.fontSize = "1.8vw"
+    showcaseMenuDiv.style.fontSize = "2.5vh"
     showcaseMenuDiv.style.color = 'gray';
     const showcaseMenuLabel = new CSS2DObject( showcaseMenuDiv );
-    showcaseMenuLabel.position.set(-20, 0, 0);
+    showcaseMenuLabel.position.set( -10, 0, 0);
     Menu.add( showcaseMenuLabel )
     showcaseMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
@@ -258,7 +304,7 @@ function main() {
     aboutMenuDiv.className = 'menu';
     aboutMenuDiv.textContent = 'ABOUT';
     aboutMenuDiv.style.marginTop = '1em';
-    aboutMenuDiv.style.fontSize = "1.8vw"
+    aboutMenuDiv.style.fontSize = "2.5vh"
     aboutMenuDiv.style.color = 'white';
     const aboutMenuLabel = new CSS2DObject( aboutMenuDiv );
     aboutMenuLabel.position.set(0, 0, 0);
@@ -283,10 +329,10 @@ function main() {
     contactMenuDiv.className = 'menu';
     contactMenuDiv.textContent = 'CONTACT';
     contactMenuDiv.style.marginTop = '1em';
-    contactMenuDiv.style.fontSize = "1.8vw"
+    contactMenuDiv.style.fontSize = "2.5vh"
     contactMenuDiv.style.color = 'gray';
     const contactMenuLabel = new CSS2DObject( contactMenuDiv );
-    contactMenuLabel.position.set(20, 0, 0);
+    contactMenuLabel.position.set(10, 0, 0);
     Menu.add( contactMenuLabel )
     contactMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
@@ -395,7 +441,7 @@ function main() {
         if(shape){
             shape.rotation.y += .2 * (targetX - shape.rotation.y)
             shape.rotation.x += .02 * (targetY - shape.rotation.x)
-            //shape.rotation.z += .05 * (targetY - mesh.rotation.x)
+            shape.position.z = -(2.5 * targetY) - .5 
 
             // shape.position.x = .5 * targetX
             // shape.position.y = (-.5 * targetY)

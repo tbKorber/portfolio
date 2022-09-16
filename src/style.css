@@ -13,6 +13,7 @@ body
     font-family: 'Arial';
     background: rgb(24,24,24);
     font-size: 100%;
+    overflow-x: hidden;
 }
 
 .webgl
@@ -26,13 +27,13 @@ body
 
 .container
 {
-    height:100vh;
+    height:95vh;
     display: grid;
     place-items: center;
 }
 
 h1 {
-    font-size: 9vw;
+    font-size: 8vh;
     text-transform: uppercase;
     color: white;
     text-align: center;
