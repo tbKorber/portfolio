@@ -46,8 +46,18 @@ h1 {
     display: grid;
     color: white;
     place-items: center;
+    user-select: none;
 }
 
 #title {
     white-space: pre-line;
+}
+
+#scrollimg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 5vh;
+    height: 5vh;
+    transform: scale(1, 1)
 }

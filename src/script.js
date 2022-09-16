@@ -371,7 +371,6 @@ function main() {
 
     window.addEventListener('scroll', () => {
         scrollY = window.scrollY;
-        
         camera.position.y = - scrollY * 0.005
     })
     
