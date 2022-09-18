@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
+import { TetrahedronGeometry } from 'three';
 
 function main() {
 
@@ -93,11 +94,15 @@ function main() {
     shape.position.set(0,0,-.5)
 
     const Menu = new THREE.Mesh(marker, transparentMat);
-    Menu.position.set(0, 1.35, 0)
-    Menu.scale.set(0.05, 0.05, 0.05)
+    Menu.position.set(0, 1.35, 0);
+    Menu.scale.set(0.05, 0.05, 0.05);
+
+    const TextBody = new THREE.Mesh(marker, transparentMat);
+    TextBody.position.set(0, -1.7, 0);
+    TextBody.scale.set(0.05, 0.05, 0.05);
     
     scene.add(particlesMesh, shape);
-    scene.add(Menu)
+    scene.add(Menu, TextBody);
     
     // Lights
     
@@ -230,51 +235,6 @@ function main() {
         }
     })
 
-    // let touchX;
-
-    // document.addEventListener('touchstart', function (event) {
-    //     touchX = mouseX;
-    // })
-
-    // document.addEventListener('touchend', function (event) {
-    //     let delta = mouseX - touchX
-    //     let absoluteVal = Math.abs(delta);
-    //     if(absoluteVal > 120){
-    //         if(delta > 0){
-    //             switch(currentPage[0]){
-    //                 case 'Trevor\nKörber':
-    //                     NavigateMenu(pageStates.Showcase);
-    //                     showcaseMenuDiv.style.color = 'white';
-    //                     break;
-    //                 case 'Contact':
-    //                     NavigateMenu(pageStates.About);
-    //                     aboutMenuDiv.style.color = 'white';
-    //                     break;
-    //                 case 'Showcase':
-    //                     NavigateMenu(pageStates.Contact);
-    //                     contactMenuDiv.style.color = 'white';
-    //                     break;
-    //             }
-    //         }
-    //         else{
-    //             switch(currentPage[0]){
-    //                 case 'Trevor\nKörber':
-    //                     NavigateMenu(pageStates.Contact);
-    //                     contactMenuDiv.style.color = 'white';
-    //                     break;
-    //                 case 'Contact':
-    //                     NavigateMenu(pageStates.Showcase);
-    //                     showcaseMenuDiv.style.color = 'white';
-    //                     break;
-    //                 case 'Showcase':
-    //                     NavigateMenu(pageStates.About);
-    //                     aboutMenuDiv.style.color = 'white';
-    //                     break;
-    //             }
-    //         }
-    //     }
-    // })
-
     const showcaseMenuDiv = document.createElement( 'div' );
     showcaseMenuDiv.className = 'menu';
     showcaseMenuDiv.textContent = 'SHOWCASE';
@@ -367,6 +327,47 @@ function main() {
 
     // Body
 
+    // const showcaseBodyDiv = document.createElement( 'div' );
+    // showcaseBodyDiv.className = 'textbody';
+    // showcaseBodyDiv.textContent = 'Trevor ';
+    // const showcaseBodyText = new CSS2DObject( showcaseBodyDiv );
+    // showcaseBodyText.position.set(-10, 0, 0);
+
+    const aboutBodyDivOne = document.createElement( 'div' );
+    aboutBodyDivOne.className = 'textbody';
+    aboutBodyDivOne.textContent = "I am a Game Programmer and Designer with a Diploma in Game Technology. Worked with Unity and Unreal Engine with knowledge on C# and Unreal Engine's Blueprints.";
+    aboutBodyDivOne.style.marginTop = '1em';
+    aboutBodyDivOne.style.fontSize = '2vh';
+    aboutBodyDivOne.style.color = 'white';
+    aboutBodyDivOne.style.textAlign = 'center';
+    aboutBodyDivOne.style.width = '60vw';
+    const aboutBodyTextOne = new CSS2DObject( aboutBodyDivOne );
+    aboutBodyTextOne.position.set(0, 0, 0);
+    TextBody.add( aboutBodyTextOne );
+
+    const aboutBodyDivTwo = document.createElement( 'div' );
+    aboutBodyDivTwo.className = 'textbody';
+    aboutBodyDivTwo.textContent = "On my spare time I like to play the electric guitar!";
+    aboutBodyDivTwo.style.marginTop = '1em';
+    aboutBodyDivTwo.style.fontSize = '2vh';
+    aboutBodyDivTwo.style.color = 'white';
+    aboutBodyDivTwo.style.textAlign = 'center';
+    aboutBodyDivTwo.style.width = '60vw';
+    const aboutBodyTextTwo = new CSS2DObject( aboutBodyDivTwo );
+    aboutBodyTextTwo.position.set(0, -4, 0);
+    TextBody.add( aboutBodyTextTwo );
+
+    // const contactBodyDiv = document.createElement( 'div' );
+    // aboutcontactBodyDivBodyDiv.className = 'textbody';
+    // contactBodyDiv.textContent = 'Trevor ';
+    // const contactBodyText = new CSS2DObject( contactBodyDiv );
+    // contactBodyText.position.set(10, 0, 0);
+
+
+    //
+    // Listeners
+    //
+
     let scrollY = window.scrollY;
 
     window.addEventListener('scroll', () => {
@@ -414,7 +415,7 @@ function main() {
             lerpDelta = 0;
         }
         lerpDelta += 0.005
-        console.log(lerpDelta)
+        // console.log(lerpDelta)
         Menu.position.lerpVectors(lerpOriginalPos, new THREE.Vector3(lerpTargetX, lerpOriginalPos.y, lerpOriginalPos.z), lerpDelta)
         camera.position.x = Menu.position.x
 
@@ -449,8 +450,6 @@ function main() {
                 }
                 break;
         }
-
-
 
         particlesMesh.rotateY(0.0001)
         
