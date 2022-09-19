@@ -36,6 +36,8 @@ function main() {
     // Scene
     const scene = new THREE.Scene();
 
+    const logoScale = new THREE.Vector3(0.7, 0.7, 0.7)
+
     var DexLabLogo;
     gltfLoader.load(
         // resource URL
@@ -43,8 +45,8 @@ function main() {
         // executes when resource loaded
         function (mesh) {
             DexLabLogo = mesh.scene;
-            DexLabLogo.position.set(0,-.5,-3)
-            DexLabLogo.scale.set(0.02, 0.02, 0.02)
+            DexLabLogo.position.set(1.2,-3.3, 0)
+            DexLabLogo.scale.set(0.011 * logoScale.x, 0.011 * logoScale.y, 0.011 * logoScale.z)
             scene.add(DexLabLogo)
         }
     )
@@ -55,8 +57,8 @@ function main() {
         // executes when resource loaded
         function (mesh) {
             MagesLogo = mesh.scene;
-            MagesLogo.position.set(0,-.5,-3)
-            MagesLogo.scale.set(.4, .4, .4)
+            MagesLogo.position.set(-1.7,-3.3,0)
+            MagesLogo.scale.set(.2 * logoScale.x, .08 * logoScale.y, .2 * logoScale.z)
             MagesLogo.rotateX(1.570796)
             scene.add(MagesLogo)
         }
@@ -133,7 +135,7 @@ function main() {
     TextBody.scale.set(0.05, 0.05, 0.05);
 
     const ProficiencyBody = new THREE.Mesh(marker, transparentMat);
-    ProficiencyBody.position.set(0, -3.8, 0)
+    ProficiencyBody.position.set(0, -4.8, 0)
     ProficiencyBody.scale.set(0.05, 0.05, 0.05);
     
     scene.add(particlesMesh, shape, profileMesh);
@@ -153,7 +155,7 @@ function main() {
     scene.add(pointLight)
     
     const pointLight2 = new THREE.PointLight(0x888888, 2)
-    pointLight2.position.set(0,-4, 2)
+    pointLight2.position.set(-1,-6.5, 2)
     pointLight2.intensity = 1.2
     scene.add(pointLight2)
     
@@ -402,7 +404,7 @@ function main() {
     aboutBodyDivOne.style.textAlign = 'justify';
     aboutBodyDivOne.style.width = '30vw';
     const aboutBodyTextOne = new CSS2DObject( aboutBodyDivOne );
-    aboutBodyTextOne.position.set(8 , -3, 0);
+    aboutBodyTextOne.position.set(8 , -2, 0);
     TextBody.add( aboutBodyTextOne );
 
     const aboutBodyDivTwo = document.createElement( 'div' );
@@ -413,8 +415,9 @@ function main() {
     aboutBodyDivTwo.style.color = 'gray';
     aboutBodyDivTwo.style.textAlign = 'justify';
     aboutBodyDivTwo.style.width = '30vw';
+    aboutBodyDivTwo.style.fontStyle = "italic"
     const aboutBodyTextTwo = new CSS2DObject( aboutBodyDivTwo );
-    aboutBodyTextTwo.position.set(8 , -7, 0);
+    aboutBodyTextTwo.position.set(8 , -8, 0);
     TextBody.add( aboutBodyTextTwo );
 
     const aboutBodyDivThree = document.createElement( 'div' );
@@ -426,7 +429,7 @@ function main() {
     aboutBodyDivThree.style.textAlign = 'justify';
     aboutBodyDivThree.style.width = '40vw';
     const aboutBodyTextThree = new CSS2DObject( aboutBodyDivThree );
-    aboutBodyTextThree.position.set(0, -15, 0);
+    aboutBodyTextThree.position.set(0, -16, 0);
     TextBody.add( aboutBodyTextThree );
 
     // const contactBodyDiv = document.createElement( 'div' );
@@ -445,13 +448,14 @@ function main() {
     // Mesh
     const proficienyBarSettings = {
         // World spacy position
-        position: new THREE.Vector3(0, ProficiencyBody.position.y - .1, 0),
+        leftPosition: new THREE.Vector3(-.5, ProficiencyBody.position.y - .1, 0),
+        rightPosition: new THREE.Vector3(.5, ProficiencyBody.position.y - .1, 0),
         // Scale
         scale: new THREE.Vector3(0.7, 0.4, 1),
         // Gap between each bar
         gap: .4,
     }
-    const proficiencies = {
+    const proficienciesLeft = {
         //Proficiency
         Programming: {
             // Relative Proficieny Value
@@ -460,7 +464,7 @@ function main() {
                 proficiencyGeometry,
                 new THREE.MeshStandardMaterial({
                     // Bar Color
-                    color: 0x418282
+                    color: 0x56ea58
                 })
             )
         },
@@ -478,7 +482,40 @@ function main() {
             mesh: new THREE.Mesh(
                 proficiencyGeometry,
                 new THREE.MeshStandardMaterial({
-                    color: 0xA7CA66
+                    color: 0xff9b78
+                })
+            )
+        }
+    };
+
+    const proficienciesRight = {
+        //Proficiency
+        Unity: {
+            // Relative Proficieny Value
+            level: 4,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    // Bar Color
+                    color: 0x08a6af
+                })
+            )
+        },
+        UnrealEngine: {
+            level: 3,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    color: 0xffc22c
+                })
+            )
+        },
+        ThreeJS: {
+            level: 2,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    color: 0x9474be
                 })
             )
         }
@@ -486,18 +523,33 @@ function main() {
     
     // Don't Touch
     let profGap = 0;
-    Object.values(proficiencies).forEach(element => {
+    Object.values(proficienciesLeft).forEach(element => {
         element.mesh.scale.set(
             proficienyBarSettings.scale.x * element.level,
             proficienyBarSettings.scale.y,
             proficienyBarSettings.scale.z);
         element.mesh.position.set(
-            proficienyBarSettings.position.x + (- element.mesh.scale.x * .25),
-            proficienyBarSettings.position.y - profGap,
-            proficienyBarSettings.position.z + (- element.mesh.scale.z * .25))
+            proficienyBarSettings.leftPosition.x + (- element.mesh.scale.x * .25),
+            proficienyBarSettings.leftPosition.y - profGap,
+            proficienyBarSettings.leftPosition.z + (- element.mesh.scale.z * .25))
         scene.add(element.mesh)
         profGap += proficienyBarSettings.gap;
     });
+
+    profGap = 0
+
+    Object.values(proficienciesRight).forEach(element => {
+        element.mesh.scale.set(
+            proficienyBarSettings.scale.x * element.level,
+            proficienyBarSettings.scale.y,
+            proficienyBarSettings.scale.z);
+        element.mesh.position.set(
+            proficienyBarSettings.rightPosition.x + (element.mesh.scale.x * .25),
+            proficienyBarSettings.rightPosition.y - profGap,
+            proficienyBarSettings.rightPosition.z + (- element.mesh.scale.z * .25))
+        scene.add(element.mesh)
+        profGap += proficienyBarSettings.gap;
+    })
 
     const aboutProfProgrammingDiv = document.createElement( 'div' );
     aboutProfProgrammingDiv.className = 'proficiencybody';
@@ -506,10 +558,10 @@ function main() {
     aboutProfProgrammingDiv.style.fontSize = '3vh';
     aboutProfProgrammingDiv.style.color = 'white';
     aboutProfProgrammingDiv.style.textAlign = 'left';
-    aboutProfProgrammingDiv.style.width = '30vw';
     aboutProfProgrammingDiv.style.textTransform = 'uppercase'
+    aboutProfProgrammingDiv.style.background = 'black'
     const aboutProfProgrammingLabel = new CSS2DObject( aboutProfProgrammingDiv );
-    aboutProfProgrammingLabel.position.set(20, 0, 0);
+    aboutProfProgrammingLabel.position.set(-12, 0, 0);
     ProficiencyBody.add( aboutProfProgrammingLabel );
 
     const aboutProfDesignDiv = document.createElement( 'div' );
@@ -519,10 +571,10 @@ function main() {
     aboutProfDesignDiv.style.fontSize = '3vh';
     aboutProfDesignDiv.style.color = 'white';
     aboutProfDesignDiv.style.textAlign = 'left';
-    aboutProfDesignDiv.style.width = '30vw';
     aboutProfDesignDiv.style.textTransform = 'uppercase'
+    aboutProfDesignDiv.style.background = 'black'
     const aboutProfDesignLabel = new CSS2DObject( aboutProfDesignDiv );
-    aboutProfDesignLabel.position.set(20, -8, 0);
+    aboutProfDesignLabel.position.set(-12, -8, 0);
     ProficiencyBody.add( aboutProfDesignLabel );
 
     const aboutProfShadingDiv = document.createElement( 'div' );
@@ -532,11 +584,50 @@ function main() {
     aboutProfShadingDiv.style.fontSize = '3vh';
     aboutProfShadingDiv.style.color = 'white';
     aboutProfShadingDiv.style.textAlign = 'left';
-    aboutProfShadingDiv.style.width = '30vw';
     aboutProfShadingDiv.style.textTransform = 'uppercase'
+    aboutProfShadingDiv.style.background = 'black'
     const aboutProfShadingLabel = new CSS2DObject( aboutProfShadingDiv );
-    aboutProfShadingLabel.position.set(20, -16, 0);
+    aboutProfShadingLabel.position.set(-12, -16, 0);
     ProficiencyBody.add( aboutProfShadingLabel );
+
+    const aboutProfUnityDiv = document.createElement( 'div' );
+    aboutProfUnityDiv.className = 'proficiencybody';
+    aboutProfUnityDiv.textContent = "Unity Engine";
+    aboutProfUnityDiv.style.marginTop = '1em';
+    aboutProfUnityDiv.style.fontSize = '3vh';
+    aboutProfUnityDiv.style.color = 'white';
+    aboutProfUnityDiv.style.textAlign = 'left';
+    aboutProfUnityDiv.style.textTransform = 'uppercase'
+    aboutProfUnityDiv.style.background = 'black'
+    const aboutProfUnityLabel = new CSS2DObject( aboutProfUnityDiv );
+    aboutProfUnityLabel.position.set(12, 0, 0);
+    ProficiencyBody.add( aboutProfUnityLabel );
+
+    const aboutProfUnrealDiv = document.createElement( 'div' );
+    aboutProfUnrealDiv.className = 'proficiencybody';
+    aboutProfUnrealDiv.textContent = "Unreal Engine";
+    aboutProfUnrealDiv.style.marginTop = '1em';
+    aboutProfUnrealDiv.style.fontSize = '3vh';
+    aboutProfUnrealDiv.style.color = 'white';
+    aboutProfUnrealDiv.style.textAlign = 'left';
+    aboutProfUnrealDiv.style.textTransform = 'uppercase'
+    aboutProfUnrealDiv.style.background = 'black'
+    const aboutProfUnrealLabel = new CSS2DObject( aboutProfUnrealDiv );
+    aboutProfUnrealLabel.position.set(12, -8, 0);
+    ProficiencyBody.add( aboutProfUnrealLabel );
+
+    const aboutProfThreeDiv = document.createElement( 'div' );
+    aboutProfThreeDiv.className = 'proficiencybody';
+    aboutProfThreeDiv.textContent = "ThreeJS";
+    aboutProfThreeDiv.style.marginTop = '1em';
+    aboutProfThreeDiv.style.fontSize = '3vh';
+    aboutProfThreeDiv.style.color = 'white';
+    aboutProfThreeDiv.style.textAlign = 'left';
+    aboutProfThreeDiv.style.textTransform = 'uppercase'
+    aboutProfThreeDiv.style.background = 'black'
+    const aboutProfThreeLabel = new CSS2DObject( aboutProfThreeDiv );
+    aboutProfThreeLabel.position.set(12, -16, 0);
+    ProficiencyBody.add( aboutProfThreeLabel );
 
     //
     // Listeners
@@ -546,10 +637,32 @@ function main() {
 
     window.addEventListener('scroll', () => {
         scrollY = window.scrollY;
-        let math1 = scrollY * 0.005
-        camera.position.y = - math1
-        profileMesh.rotation.y = math1 + 4
-        profileMesh.rotation.z = math1 + 4
+
+        
+        let scrollRate = scrollY * 0.005
+        camera.position.y = - scrollRate
+        
+        let scrollpagemarker = 476
+
+
+        switch(currentPage){
+            case pageStates.About:
+                let scrollScale = ((scrollY / scrollpagemarker) * 0.4)
+        
+                if(scrollY < scrollpagemarker)
+                {
+                    profileMesh.rotation.y = scrollRate + 4
+                    profileMesh.rotation.z = scrollRate + 4
+                    profileMesh.scale.set(scrollScale, scrollScale, scrollScale)
+                    console.log(scrollRate + 4)
+                }
+                else{
+                    profileMesh.rotation.y = 6.35
+                    profileMesh.rotation.z = 6.35
+                    profileMesh.scale.set(0.4, 0.4, 0.4)
+                }
+                break;
+        }
     })
     
     let mouseX = 0;
