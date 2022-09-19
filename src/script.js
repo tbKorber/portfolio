@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
-import { TetrahedronGeometry } from 'three';
+import { TextureLoader } from 'three';
 
 function main() {
 
@@ -18,6 +18,10 @@ function main() {
     
     // Loaders
     const gltfLoader = new GLTFLoader();
+    const textureLoader = new TextureLoader();
+
+    // Textures
+    const profileTexture = textureLoader.load('/textures/selfie.jpg');
 
     // Debug
     //const gui = new dat.GUI();
@@ -51,6 +55,7 @@ function main() {
 
     // Objects
     const shapeGeometry = new THREE.IcosahedronGeometry();
+    const profileGeometry = new THREE.CircleGeometry(1, 16);
 
     const marker = new THREE.SphereGeometry();
 
@@ -93,15 +98,26 @@ function main() {
     const shape = new THREE.Mesh(shapeGeometry, shapeMaterial);
     shape.position.set(0,0,-.5)
 
+    const profileMesh = new THREE.Mesh(profileGeometry, 
+        new THREE.MeshBasicMaterial(
+            {
+                map: profileTexture,
+                side: THREE.DoubleSide
+            }
+        )
+    )
+    profileMesh.position.set(-1, -2, 0)
+    profileMesh.scale.set(0.4, 0.4, 0.4)
+
     const Menu = new THREE.Mesh(marker, transparentMat);
     Menu.position.set(0, 1.35, 0);
     Menu.scale.set(0.05, 0.05, 0.05);
 
     const TextBody = new THREE.Mesh(marker, transparentMat);
-    TextBody.position.set(0, -1.7, 0);
+    TextBody.position.set(0, -1.8, .2);
     TextBody.scale.set(0.05, 0.05, 0.05);
     
-    scene.add(particlesMesh, shape);
+    scene.add(particlesMesh, shape, profileMesh);
     scene.add(Menu, TextBody);
     
     // Lights
@@ -339,10 +355,10 @@ function main() {
     aboutBodyDivOne.style.marginTop = '1em';
     aboutBodyDivOne.style.fontSize = '2vh';
     aboutBodyDivOne.style.color = 'white';
-    aboutBodyDivOne.style.textAlign = 'center';
-    aboutBodyDivOne.style.width = '60vw';
+    aboutBodyDivOne.style.textAlign = 'left';
+    aboutBodyDivOne.style.width = '30vw';
     const aboutBodyTextOne = new CSS2DObject( aboutBodyDivOne );
-    aboutBodyTextOne.position.set(0, 0, 0);
+    aboutBodyTextOne.position.set(10 , 0, 0);
     TextBody.add( aboutBodyTextOne );
 
     const aboutBodyDivTwo = document.createElement( 'div' );
@@ -351,10 +367,10 @@ function main() {
     aboutBodyDivTwo.style.marginTop = '1em';
     aboutBodyDivTwo.style.fontSize = '2vh';
     aboutBodyDivTwo.style.color = 'white';
-    aboutBodyDivTwo.style.textAlign = 'center';
-    aboutBodyDivTwo.style.width = '60vw';
+    aboutBodyDivTwo.style.textAlign = 'left';
+    aboutBodyDivTwo.style.width = '30vw';
     const aboutBodyTextTwo = new CSS2DObject( aboutBodyDivTwo );
-    aboutBodyTextTwo.position.set(0, -4, 0);
+    aboutBodyTextTwo.position.set(10, -5, 0);
     TextBody.add( aboutBodyTextTwo );
 
     // const contactBodyDiv = document.createElement( 'div' );
@@ -372,7 +388,10 @@ function main() {
 
     window.addEventListener('scroll', () => {
         scrollY = window.scrollY;
-        camera.position.y = - scrollY * 0.005
+        let math1 = scrollY * 0.005
+        camera.position.y = - math1
+        profileMesh.rotation.y = math1 + 4
+        profileMesh.rotation.z = math1 + 4
     })
     
     let mouseX = 0;
