@@ -8,8 +8,8 @@ html,
 body
 {
     /* position: fixed; */
-    height: 200vh;
-    /* width: 100vw; */
+    height: 170vh;
+    width: 100vw;
     font-family: 'Arial';
     background: rgb(24,24,24);
     font-size: 100%;
@@ -46,7 +46,6 @@ h1 {
 
 .menu {
     display: grid;
-    color: white;
     place-items: center;
     user-select: none;
 }

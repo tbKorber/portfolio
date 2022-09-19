@@ -4,6 +4,7 @@ import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { TextureLoader } from 'three';
+import { DEG2RAD, degToRad } from 'three/src/math/mathutils';
 
 function main() {
 
@@ -35,27 +36,40 @@ function main() {
     // Scene
     const scene = new THREE.Scene();
 
-    // var shape;
-    // gltfLoader.load(
-    //     // resource URL
-    //     '/models/DexLab_LOGO.glb',
-    //     // executes when resource loaded
-    //     function (mesh) {
-    //         shape = mesh.scene;
-    //         shape.position.set(0,-.5,-3)
-    //         shape.scale.set(0.04, 0.04, 0.04)
-    //         scene.add(shape)
-    //     }
-    // )
+    var DexLabLogo;
+    gltfLoader.load(
+        // resource URL
+        '/models/DexLab_LOGO.glb',
+        // executes when resource loaded
+        function (mesh) {
+            DexLabLogo = mesh.scene;
+            DexLabLogo.position.set(0,-.5,-3)
+            DexLabLogo.scale.set(0.02, 0.02, 0.02)
+            scene.add(DexLabLogo)
+        }
+    )
+    var MagesLogo;
+    gltfLoader.load(
+        // resource URL
+        '/models/MAGES_Logo.glb',
+        // executes when resource loaded
+        function (mesh) {
+            MagesLogo = mesh.scene;
+            MagesLogo.position.set(0,-.5,-3)
+            MagesLogo.scale.set(.4, .4, .4)
+            MagesLogo.rotateX(1.570796)
+            scene.add(MagesLogo)
+        }
+    )
 
     // Raycasting
-    const raycaster = new THREE.Raycaster()
-    raycaster.layers.set(1)
-    let INTERSECTED;
+    // const raycaster = new THREE.Raycaster()
+    // raycaster.layers.set(1)
+    // let INTERSECTED;
 
     // Objects
     const shapeGeometry = new THREE.IcosahedronGeometry();
-    const profileGeometry = new THREE.CircleGeometry(1, 16);
+    const profileGeometry = new THREE.CircleGeometry(1, 32);
 
     const marker = new THREE.SphereGeometry();
 
@@ -78,12 +92,13 @@ function main() {
         size: 0.02,
         transparent: true,
         //map: cross,
-        color: 0x666666
+        color: 0xffffff,
+        opacity: 0.2
     }
     );
 
     const shapeMaterial = new THREE.MeshStandardMaterial({
-        color: 0x232323,
+        color: 0xA0A0A0,
         metalness: 0.7,
         roughness: 0.7
     })
@@ -116,25 +131,36 @@ function main() {
     const TextBody = new THREE.Mesh(marker, transparentMat);
     TextBody.position.set(0, -1.8, .2);
     TextBody.scale.set(0.05, 0.05, 0.05);
+
+    const ProficiencyBody = new THREE.Mesh(marker, transparentMat);
+    ProficiencyBody.position.set(0, -3.8, 0)
+    ProficiencyBody.scale.set(0.05, 0.05, 0.05);
     
     scene.add(particlesMesh, shape, profileMesh);
-    scene.add(Menu, TextBody);
-    
+    scene.add(Menu, TextBody, ProficiencyBody);
+
+    // testBox.scale.set(.5,.5,.5)
+    // testBox.position.set((testBox.scale.x * .25) -1 ,-2.7, 0)
+    // console.log(testBox)
+
+    // scene.add(testBox)
+
     // Lights
     
     const pointLight = new THREE.PointLight(0x888888, 2)
     pointLight.position.set(2,2.3,0.85)
-    pointLight.intensity = 10
+    pointLight.intensity = 2
     scene.add(pointLight)
+    
+    const pointLight2 = new THREE.PointLight(0x888888, 2)
+    pointLight2.position.set(0,-4, 2)
+    pointLight2.intensity = 1.2
+    scene.add(pointLight2)
     
     // light1.add(pointLight.position, 'x').min(-6).max(6).step(0.01)
     // light1.add(pointLight.position, 'y').min(-3).max(3).step(0.01)
     // light1.add(pointLight.position, 'z').min(-3).max(3).step(0.01)
     // light1.add(pointLight, 'intensity').min(0).max(10).step(0.01)
-    
-    const light1Color = {
-        color: 0x888888
-    }
 
     // light1.addColor(light1Color, 'color')
     // .onChange(() => {
@@ -164,7 +190,7 @@ function main() {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
         menuRenderer.setSize(sizes.width, sizes.height)
-        menuRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        // menuRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     });
     
     /**
@@ -208,6 +234,20 @@ function main() {
     //
 
     // Menu
+
+    const menuStyles = {
+        // https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart
+        Color: {
+            active: 'white',
+            inactive: 'gray',
+            hover: 'gainsboro'
+        },
+        // https://www.w3schools.com/csSref/pr_font_weight.asp
+        Weight: {
+            active: 'bold',
+            inactive: 'normal'
+        }
+    }
     
     let title = document.getElementById("title");
     title.textContent = pageStates.About[0];
@@ -216,35 +256,29 @@ function main() {
         switch(event.code){
             case 'KeyH':
             case 'KeyA':
-                switch(currentPage[0]){
-                    case 'Trevor\nKörber':
-                        NavigateMenu(pageStates.Showcase);
-                        showcaseMenuDiv.style.color = 'white';
+                switch(currentPage){
+                    case pageStates.About:
+                        NavigateMenu(pageStates.Showcase, showcaseMenuDiv);
                         break;
-                    case 'Contact':
-                        NavigateMenu(pageStates.About);
-                        aboutMenuDiv.style.color = 'white';
+                    case pageStates.Contact:
+                        NavigateMenu(pageStates.About, aboutMenuDiv);
                         break;
-                    case 'Showcase':
-                        NavigateMenu(pageStates.Contact);
-                        contactMenuDiv.style.color = 'white';
+                    case pageStates.Showcase:
+                        NavigateMenu(pageStates.Contact, contactMenuDiv);
                         break;
                 }
                 break;
             case 'KeyL':
             case 'KeyD':
-                switch(currentPage[0]){
-                    case 'Trevor\nKörber':
-                        NavigateMenu(pageStates.Contact);
-                        contactMenuDiv.style.color = 'white';
+                switch(currentPage){
+                    case pageStates.About:
+                        NavigateMenu(pageStates.Contact, contactMenuDiv);
                         break;
-                    case 'Contact':
-                        NavigateMenu(pageStates.Showcase);
-                        showcaseMenuDiv.style.color = 'white';
+                    case pageStates.Contact:
+                        NavigateMenu(pageStates.Showcase, showcaseMenuDiv);
                         break;
-                    case 'Showcase':
-                        NavigateMenu(pageStates.About);
-                        aboutMenuDiv.style.color = 'white';
+                    case pageStates.Showcase:
+                        NavigateMenu(pageStates.About, aboutMenuDiv);
                         break;
                 }
                 break;
@@ -256,24 +290,21 @@ function main() {
     showcaseMenuDiv.textContent = 'SHOWCASE';
     showcaseMenuDiv.style.marginTop = '1em';
     showcaseMenuDiv.style.fontSize = "2.5vh"
-    showcaseMenuDiv.style.color = 'gray';
+    showcaseMenuDiv.style.color = menuStyles.Color.inactive;
     const showcaseMenuLabel = new CSS2DObject( showcaseMenuDiv );
     showcaseMenuLabel.position.set( -10, 0, 0);
     Menu.add( showcaseMenuLabel )
     showcaseMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
-        NavigateMenu(pageStates.Showcase);
-        showcaseMenuDiv.style.color = 'white';
+        NavigateMenu(pageStates.Showcase, showcaseMenuDiv);
     })
     showcaseMenuDiv.addEventListener('pointerenter', () => {
         // On Hover
-        showcaseMenuDiv.style.color = "white";
+        pointerHover(true, showcaseMenuDiv, pageStates.Showcase)
     })
     showcaseMenuDiv.addEventListener('pointerleave', () => {
         // Leave Hover
-        if(currentPage != pageStates.Showcase){
-            showcaseMenuDiv.style.color = "gray"
-        }
+        pointerHover(false, showcaseMenuDiv, pageStates.Showcase)
     })
 
     const aboutMenuDiv = document.createElement( 'div' );
@@ -281,24 +312,23 @@ function main() {
     aboutMenuDiv.textContent = 'ABOUT';
     aboutMenuDiv.style.marginTop = '1em';
     aboutMenuDiv.style.fontSize = "2.5vh"
-    aboutMenuDiv.style.color = 'white';
+    aboutMenuDiv.style.color = menuStyles.Color.active;
+    aboutMenuDiv.style.fontWeight = menuStyles.Weight.active;
     const aboutMenuLabel = new CSS2DObject( aboutMenuDiv );
     aboutMenuLabel.position.set(0, 0, 0);
     Menu.add( aboutMenuLabel )
     aboutMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
-        NavigateMenu(pageStates.About);
-        aboutMenuDiv.style.color = 'white';
+        NavigateMenu(pageStates.About, aboutMenuDiv);
     })
     aboutMenuDiv.addEventListener('pointerenter', () => {
         // On Hover
-        aboutMenuDiv.style.color = "white"
+        pointerHover(true, aboutMenuDiv, pageStates.About)
     })
     aboutMenuDiv.addEventListener('pointerleave', () => {
         // Leave Hover
-        if(currentPage != pageStates.About){
-            aboutMenuDiv.style.color = "gray"
-        }
+        pointerHover(false, aboutMenuDiv, pageStates.About)
+
     })
 
     const contactMenuDiv = document.createElement( 'div' );
@@ -306,35 +336,49 @@ function main() {
     contactMenuDiv.textContent = 'CONTACT';
     contactMenuDiv.style.marginTop = '1em';
     contactMenuDiv.style.fontSize = "2.5vh"
-    contactMenuDiv.style.color = 'gray';
+    contactMenuDiv.style.color = menuStyles.Color.inactive;
     const contactMenuLabel = new CSS2DObject( contactMenuDiv );
     contactMenuLabel.position.set(10, 0, 0);
     Menu.add( contactMenuLabel )
     contactMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
-        NavigateMenu(pageStates.Contact)
-        contactMenuDiv.style.color = 'white';
+        NavigateMenu(pageStates.Contact, contactMenuDiv)
     })
     contactMenuDiv.addEventListener('pointerenter', () => {
         // On Hover
-        contactMenuDiv.style.color = "white"
+        pointerHover(true, contactMenuDiv, pageStates.Contact)
     })
     contactMenuDiv.addEventListener('pointerleave', () => {
         // Leave Hover
-        if(currentPage != pageStates.Contact){
-            contactMenuDiv.style.color = "gray"
-        }
+        pointerHover(false, contactMenuDiv, pageStates.Contact)
     })
+
+    function pointerHover(enter, div, state){
+        if(enter){
+            div.style.color = menuStyles.Color.hover;
+        }
+        else{
+            if(currentPage != state){
+                div.style.color = menuStyles.Color.inactive;
+            }
+            else{
+                div.style.color = menuStyles.Color.active;
+            }
+        }
+    }
 
     const menuDivs = [ showcaseMenuDiv, aboutMenuDiv, contactMenuDiv ];
 
-    function NavigateMenu(page){
+    function NavigateMenu(page, div){
         currentPage = page;
         console.log(currentPage[0]);
         title.textContent = currentPage[0]
         menuDivs.forEach(element => {
-            element.style.color = 'gray';
+            element.style.color = menuStyles.Color.inactive;
+            element.style.fontWeight = menuStyles.Weight.inactive;
         });
+        div.style.color = menuStyles.Color.active;
+        div.style.fontWeight = menuStyles.Weight.active;
 
         lerpLoop = false;
         lerpTargetX = currentPage[1];
@@ -351,27 +395,39 @@ function main() {
 
     const aboutBodyDivOne = document.createElement( 'div' );
     aboutBodyDivOne.className = 'textbody';
-    aboutBodyDivOne.textContent = "I am a Game Programmer and Designer with a Diploma in Game Technology. Worked with Unity and Unreal Engine with knowledge on C# and Unreal Engine's Blueprints.";
+    aboutBodyDivOne.textContent = "Hi there! Thank you for checking out my portfolio. Here you will know a little more about me. If you'd like to get in contact with me you can head over to the Contact Section from the menu above.";
     aboutBodyDivOne.style.marginTop = '1em';
     aboutBodyDivOne.style.fontSize = '2vh';
     aboutBodyDivOne.style.color = 'white';
-    aboutBodyDivOne.style.textAlign = 'left';
+    aboutBodyDivOne.style.textAlign = 'justify';
     aboutBodyDivOne.style.width = '30vw';
     const aboutBodyTextOne = new CSS2DObject( aboutBodyDivOne );
-    aboutBodyTextOne.position.set(10 , 0, 0);
+    aboutBodyTextOne.position.set(8 , -3, 0);
     TextBody.add( aboutBodyTextOne );
 
     const aboutBodyDivTwo = document.createElement( 'div' );
     aboutBodyDivTwo.className = 'textbody';
-    aboutBodyDivTwo.textContent = "On my spare time I like to play the electric guitar!";
+    aboutBodyDivTwo.textContent = "(-psst!- Alternatively you could navigate with [A] and [D] keys too, or if youre a unix geek you can use [H] and [L] respectively).";
     aboutBodyDivTwo.style.marginTop = '1em';
-    aboutBodyDivTwo.style.fontSize = '2vh';
-    aboutBodyDivTwo.style.color = 'white';
-    aboutBodyDivTwo.style.textAlign = 'left';
+    aboutBodyDivTwo.style.fontSize = '1.7vh';
+    aboutBodyDivTwo.style.color = 'gray';
+    aboutBodyDivTwo.style.textAlign = 'justify';
     aboutBodyDivTwo.style.width = '30vw';
     const aboutBodyTextTwo = new CSS2DObject( aboutBodyDivTwo );
-    aboutBodyTextTwo.position.set(10, -5, 0);
+    aboutBodyTextTwo.position.set(8 , -7, 0);
     TextBody.add( aboutBodyTextTwo );
+
+    const aboutBodyDivThree = document.createElement( 'div' );
+    aboutBodyDivThree.className = 'textbody';
+    aboutBodyDivThree.textContent = "I graduated from MAGES Institute of Excellence in Singapore with a Diploma in Game Technolody at the end of 2021. I'm currently employed at Dex-Lab Pte. Ltd. as a Game Designer.";
+    aboutBodyDivThree.style.marginTop = '1em';
+    aboutBodyDivThree.style.fontSize = '2vh';
+    aboutBodyDivThree.style.color = 'white';
+    aboutBodyDivThree.style.textAlign = 'justify';
+    aboutBodyDivThree.style.width = '40vw';
+    const aboutBodyTextThree = new CSS2DObject( aboutBodyDivThree );
+    aboutBodyTextThree.position.set(0, -15, 0);
+    TextBody.add( aboutBodyTextThree );
 
     // const contactBodyDiv = document.createElement( 'div' );
     // aboutcontactBodyDivBodyDiv.className = 'textbody';
@@ -379,6 +435,108 @@ function main() {
     // const contactBodyText = new CSS2DObject( contactBodyDiv );
     // contactBodyText.position.set(10, 0, 0);
 
+    //
+    // Proficiency Meters
+    //
+    
+    // Geometry
+    const proficiencyGeometry = new THREE.BoxGeometry(.5, .5, .5)
+
+    // Mesh
+    const proficienyBarSettings = {
+        // World spacy position
+        position: new THREE.Vector3(0, ProficiencyBody.position.y - .1, 0),
+        // Scale
+        scale: new THREE.Vector3(0.7, 0.4, 1),
+        // Gap between each bar
+        gap: .4,
+    }
+    const proficiencies = {
+        //Proficiency
+        Programming: {
+            // Relative Proficieny Value
+            level: 4,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    // Bar Color
+                    color: 0x418282
+                })
+            )
+        },
+        Design: {
+            level: 3,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    color: 0xAE3B3B
+                })
+            )
+        },
+        Shading: {
+            level: 1,
+            mesh: new THREE.Mesh(
+                proficiencyGeometry,
+                new THREE.MeshStandardMaterial({
+                    color: 0xA7CA66
+                })
+            )
+        }
+    };
+    
+    // Don't Touch
+    let profGap = 0;
+    Object.values(proficiencies).forEach(element => {
+        element.mesh.scale.set(
+            proficienyBarSettings.scale.x * element.level,
+            proficienyBarSettings.scale.y,
+            proficienyBarSettings.scale.z);
+        element.mesh.position.set(
+            proficienyBarSettings.position.x + (- element.mesh.scale.x * .25),
+            proficienyBarSettings.position.y - profGap,
+            proficienyBarSettings.position.z + (- element.mesh.scale.z * .25))
+        scene.add(element.mesh)
+        profGap += proficienyBarSettings.gap;
+    });
+
+    const aboutProfProgrammingDiv = document.createElement( 'div' );
+    aboutProfProgrammingDiv.className = 'proficiencybody';
+    aboutProfProgrammingDiv.textContent = "Programming";
+    aboutProfProgrammingDiv.style.marginTop = '1em';
+    aboutProfProgrammingDiv.style.fontSize = '3vh';
+    aboutProfProgrammingDiv.style.color = 'white';
+    aboutProfProgrammingDiv.style.textAlign = 'left';
+    aboutProfProgrammingDiv.style.width = '30vw';
+    aboutProfProgrammingDiv.style.textTransform = 'uppercase'
+    const aboutProfProgrammingLabel = new CSS2DObject( aboutProfProgrammingDiv );
+    aboutProfProgrammingLabel.position.set(20, 0, 0);
+    ProficiencyBody.add( aboutProfProgrammingLabel );
+
+    const aboutProfDesignDiv = document.createElement( 'div' );
+    aboutProfDesignDiv.className = 'proficiencybody';
+    aboutProfDesignDiv.textContent = "Design";
+    aboutProfDesignDiv.style.marginTop = '1em';
+    aboutProfDesignDiv.style.fontSize = '3vh';
+    aboutProfDesignDiv.style.color = 'white';
+    aboutProfDesignDiv.style.textAlign = 'left';
+    aboutProfDesignDiv.style.width = '30vw';
+    aboutProfDesignDiv.style.textTransform = 'uppercase'
+    const aboutProfDesignLabel = new CSS2DObject( aboutProfDesignDiv );
+    aboutProfDesignLabel.position.set(20, -8, 0);
+    ProficiencyBody.add( aboutProfDesignLabel );
+
+    const aboutProfShadingDiv = document.createElement( 'div' );
+    aboutProfShadingDiv.className = 'proficiencybody';
+    aboutProfShadingDiv.textContent = "Shading";
+    aboutProfShadingDiv.style.marginTop = '1em';
+    aboutProfShadingDiv.style.fontSize = '3vh';
+    aboutProfShadingDiv.style.color = 'white';
+    aboutProfShadingDiv.style.textAlign = 'left';
+    aboutProfShadingDiv.style.width = '30vw';
+    aboutProfShadingDiv.style.textTransform = 'uppercase'
+    const aboutProfShadingLabel = new CSS2DObject( aboutProfShadingDiv );
+    aboutProfShadingLabel.position.set(20, -16, 0);
+    ProficiencyBody.add( aboutProfShadingLabel );
 
     //
     // Listeners
@@ -421,7 +579,7 @@ function main() {
     // UPDATE
     //
 
-    console.log(scene.children)
+    // console.log(scene.children)
 
     var lerpDelta = 0;
     var lerpLoop = false;
@@ -462,7 +620,7 @@ function main() {
                 if(shape){
                     shape.rotation.y += .2 * (targetX - shape.rotation.y)
                     shape.rotation.x += .02 * (targetY - shape.rotation.x)
-                    shape.position.z = -(1.8 * targetY) - .5 
+                    shape.position.z = -(1.8 * targetY) - .5;
         
                     // shape.position.x = .5 * targetX
                     // shape.position.y = (-.5 * targetY)
