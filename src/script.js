@@ -4,7 +4,6 @@ import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import { TextureLoader } from 'three';
-import { DEG2RAD, degToRad } from 'three/src/math/mathutils';
 
 function main() {
 
@@ -38,31 +37,49 @@ function main() {
 
     const logoScale = new THREE.Vector3(0.7, 0.7, 0.7)
 
-    var DexLabLogo;
-    gltfLoader.load(
-        // resource URL
-        '/models/DexLab_LOGO.glb',
-        // executes when resource loaded
-        function (mesh) {
-            DexLabLogo = mesh.scene;
-            DexLabLogo.position.set(1.2,-3.3, 0)
-            DexLabLogo.scale.set(0.011 * logoScale.x, 0.011 * logoScale.y, 0.011 * logoScale.z)
-            scene.add(DexLabLogo)
+    const logoMeshs = {
+        DexLabLogo: {
+            // Resource URL
+            glb: '/models/DexLab_LOGO.glb',
+            // Worldspace Position
+            position: new THREE.Vector3(.8,-3.3, 0),
+            // Scale * logoScale (Increase logoScale to increase all logos)
+            scale: new THREE.Vector3(0.014, 0.014, 0.022),
+            // Rotation in Degrees (gets converted to radians in process)
+            rotation: new THREE.Vector3(0, 0, 0),
+            // Specify Color Hex (eg. 0x00FFFF for cyan not as string) or color name as string (eg. 'cyan')
+            color: new THREE.Color('white'),
+            // Don't touch this, this will be the actual Mesh reference which becomes available when model loaded.
+            mesh: null
+        },
+        MagesLogo: {
+            glb: '/models/MAGES_Logo.glb',
+            position: new THREE.Vector3(-1.7,-3.3,0),
+            scale: new THREE.Vector3(0.2, 0.08, 0.2),
+            rotation: new THREE.Vector3(90, 0, 0),
+            color: new THREE.Color('white'),
+            mesh: null
         }
-    )
-    var MagesLogo;
-    gltfLoader.load(
-        // resource URL
-        '/models/MAGES_Logo.glb',
-        // executes when resource loaded
-        function (mesh) {
-            MagesLogo = mesh.scene;
-            MagesLogo.position.set(-1.7,-3.3,0)
-            MagesLogo.scale.set(.2 * logoScale.x, .08 * logoScale.y, .2 * logoScale.z)
-            MagesLogo.rotateX(1.570796)
-            scene.add(MagesLogo)
-        }
-    )
+    }
+
+    // DO NOT TOUCH
+    Object.values(logoMeshs).forEach(element => {
+        gltfLoader.load(
+            // resource url,
+            element.glb,
+            // execute when resource loaded,
+            function (mesh) {
+                element.mesh = mesh.scene;
+                element.mesh.position.set(element.position.x, element.position.y, element.position.z);
+                element.mesh.scale.set(element.scale.x * logoScale.x, element.scale.y * logoScale.y, element.scale.z * logoScale.z);
+                element.mesh.rotation.x = THREE.MathUtils.degToRad(element.rotation.x);
+                element.mesh.rotation.y = THREE.MathUtils.degToRad(element.rotation.y);
+                element.mesh.rotation.z = THREE.MathUtils.degToRad(element.rotation.z);
+                element.mesh.children[0].material.color = element.color;
+                scene.add(element.mesh);
+            }
+        )
+    });
 
     // Raycasting
     // const raycaster = new THREE.Raycaster()
@@ -100,7 +117,7 @@ function main() {
     );
 
     const shapeMaterial = new THREE.MeshStandardMaterial({
-        color: 0xA0A0A0,
+        color: 0x444444,
         metalness: 0.7,
         roughness: 0.7
     })
@@ -141,12 +158,6 @@ function main() {
     scene.add(particlesMesh, shape, profileMesh);
     scene.add(Menu, TextBody, ProficiencyBody);
 
-    // testBox.scale.set(.5,.5,.5)
-    // testBox.position.set((testBox.scale.x * .25) -1 ,-2.7, 0)
-    // console.log(testBox)
-
-    // scene.add(testBox)
-
     // Lights
     
     const pointLight = new THREE.PointLight(0x888888, 2)
@@ -155,19 +166,12 @@ function main() {
     scene.add(pointLight)
     
     const pointLight2 = new THREE.PointLight(0x888888, 2)
-    pointLight2.position.set(-1,-6.5, 2)
+    pointLight2.position.set(-2,-6.5, 5)
     pointLight2.intensity = 1.2
     scene.add(pointLight2)
-    
-    // light1.add(pointLight.position, 'x').min(-6).max(6).step(0.01)
-    // light1.add(pointLight.position, 'y').min(-3).max(3).step(0.01)
-    // light1.add(pointLight.position, 'z').min(-3).max(3).step(0.01)
-    // light1.add(pointLight, 'intensity').min(0).max(10).step(0.01)
 
-    // light1.addColor(light1Color, 'color')
-    // .onChange(() => {
-    //     pointLight.color.set(light1Color.color)
-    // })
+    const pointlightHelper = new THREE.PointLightHelper(pointLight2, 1)
+    scene.add(pointlightHelper)
 
     /**
      * Sizes
@@ -226,10 +230,6 @@ function main() {
     menuRenderer.domElement.style.position = 'fixed';
     menuRenderer.domElement.style.top = '0px';
     document.body.appendChild( menuRenderer.domElement );
-    
-    /**
-     * Animate
-     */
 
     //
     // CSS Objects
@@ -389,12 +389,6 @@ function main() {
 
     // Body
 
-    // const showcaseBodyDiv = document.createElement( 'div' );
-    // showcaseBodyDiv.className = 'textbody';
-    // showcaseBodyDiv.textContent = 'Trevor ';
-    // const showcaseBodyText = new CSS2DObject( showcaseBodyDiv );
-    // showcaseBodyText.position.set(-10, 0, 0);
-
     const aboutBodyDivOne = document.createElement( 'div' );
     aboutBodyDivOne.className = 'textbody';
     aboutBodyDivOne.textContent = "Hi there! Thank you for checking out my portfolio. Here you will know a little more about me. If you'd like to get in contact with me you can head over to the Contact Section from the menu above.";
@@ -432,12 +426,6 @@ function main() {
     aboutBodyTextThree.position.set(0, -16, 0);
     TextBody.add( aboutBodyTextThree );
 
-    // const contactBodyDiv = document.createElement( 'div' );
-    // aboutcontactBodyDivBodyDiv.className = 'textbody';
-    // contactBodyDiv.textContent = 'Trevor ';
-    // const contactBodyText = new CSS2DObject( contactBodyDiv );
-    // contactBodyText.position.set(10, 0, 0);
-
     //
     // Proficiency Meters
     //
@@ -451,7 +439,7 @@ function main() {
         leftPosition: new THREE.Vector3(-.5, ProficiencyBody.position.y - .1, 0),
         rightPosition: new THREE.Vector3(.5, ProficiencyBody.position.y - .1, 0),
         // Scale
-        scale: new THREE.Vector3(0.7, 0.4, 1),
+        scale: new THREE.Vector3(.4, 0.4, 1),
         // Gap between each bar
         gap: .4,
     }
@@ -525,31 +513,49 @@ function main() {
     let profGap = 0;
     Object.values(proficienciesLeft).forEach(element => {
         element.mesh.scale.set(
-            proficienyBarSettings.scale.x * element.level,
+            // proficienyBarSettings.scale.x * element.level,
+            // proficienyBarSettings.scale.y,
+            // proficienyBarSettings.scale.z
+            0.01,
             proficienyBarSettings.scale.y,
-            proficienyBarSettings.scale.z);
+            proficienyBarSettings.scale.z
+            );
         element.mesh.position.set(
             proficienyBarSettings.leftPosition.x + (- element.mesh.scale.x * .25),
             proficienyBarSettings.leftPosition.y - profGap,
-            proficienyBarSettings.leftPosition.z + (- element.mesh.scale.z * .25))
+            proficienyBarSettings.leftPosition.z + (- element.mesh.scale.z * .25)
+            );
         scene.add(element.mesh)
         profGap += proficienyBarSettings.gap;
     });
 
     profGap = 0
-
     Object.values(proficienciesRight).forEach(element => {
         element.mesh.scale.set(
-            proficienyBarSettings.scale.x * element.level,
+            // proficienyBarSettings.scale.x * element.level,
+            // proficienyBarSettings.scale.y,
+            // proficienyBarSettings.scale.z
+            0.01,
             proficienyBarSettings.scale.y,
-            proficienyBarSettings.scale.z);
+            proficienyBarSettings.scale.z
+            );
         element.mesh.position.set(
             proficienyBarSettings.rightPosition.x + (element.mesh.scale.x * .25),
             proficienyBarSettings.rightPosition.y - profGap,
-            proficienyBarSettings.rightPosition.z + (- element.mesh.scale.z * .25))
+            proficienyBarSettings.rightPosition.z + (- element.mesh.scale.z * .25)
+            );
         scene.add(element.mesh)
         profGap += proficienyBarSettings.gap;
     })
+
+    const gridHelperLeft = new THREE.GridHelper(20,5)
+    gridHelperLeft.rotation.x = THREE.MathUtils.degToRad(90)
+    gridHelperLeft.position.set(-20,-10,0);
+    ProficiencyBody.add(gridHelperLeft);
+    const gridHelperRight = new THREE.GridHelper(20,5)
+    gridHelperRight.rotation.x = THREE.MathUtils.degToRad(90)
+    gridHelperRight.position.set(20,-10,0);
+    ProficiencyBody.add(gridHelperRight);
 
     const aboutProfProgrammingDiv = document.createElement( 'div' );
     aboutProfProgrammingDiv.className = 'proficiencybody';
@@ -635,31 +641,57 @@ function main() {
 
     let scrollY = window.scrollY;
 
+    const pageMarkers = {
+        aboutMe: 476,
+        proficiency: {
+            start: 600,
+            end: 900
+        }
+    }
+
     window.addEventListener('scroll', () => {
         scrollY = window.scrollY;
-
         
         let scrollRate = scrollY * 0.005
         camera.position.y = - scrollRate
         
-        let scrollpagemarker = 476
-
+        console.log(scrollY)
 
         switch(currentPage){
             case pageStates.About:
-                let scrollScale = ((scrollY / scrollpagemarker) * 0.4)
+                let scrollScale = ((scrollY / pageMarkers.aboutMe) * 0.4)
         
-                if(scrollY < scrollpagemarker)
+                if(scrollY < pageMarkers.aboutMe)
                 {
                     profileMesh.rotation.y = scrollRate + 4
                     profileMesh.rotation.z = scrollRate + 4
                     profileMesh.scale.set(scrollScale, scrollScale, scrollScale)
-                    console.log(scrollRate + 4)
                 }
                 else{
                     profileMesh.rotation.y = 6.35
                     profileMesh.rotation.z = 6.35
                     profileMesh.scale.set(0.4, 0.4, 0.4)
+                }
+                if( pageMarkers.proficiency.start < scrollY && scrollY < pageMarkers.proficiency.end){
+                    let proficienyDelta = (scrollY - pageMarkers.proficiency.start) / (pageMarkers.proficiency.end - pageMarkers.proficiency.start)
+                    Object.values(proficienciesLeft).forEach(element => {
+                        element.mesh.scale.x = THREE.MathUtils.lerp(0, proficienyBarSettings.scale.x * element.level, proficienyDelta)
+                        element.mesh.position.x = proficienyBarSettings.leftPosition.x + (- element.mesh.scale.x * .25)
+                    });
+                    Object.values(proficienciesRight).forEach(element => {
+                        element.mesh.scale.x = - THREE.MathUtils.lerp(0, proficienyBarSettings.scale.x * element.level, proficienyDelta)
+                        element.mesh.position.x = proficienyBarSettings.rightPosition.x + (- element.mesh.scale.x * .25)
+                    });
+                }
+                else if(scrollY > pageMarkers.proficiency.end){
+                    Object.values(proficienciesLeft).forEach(element => {
+                        element.mesh.scale.x = proficienyBarSettings.scale.x * element.level
+                        element.mesh.position.x = proficienyBarSettings.leftPosition.x + (- element.mesh.scale.x * .25)
+                    });
+                    Object.values(proficienciesRight).forEach(element => {
+                        element.mesh.scale.x = - proficienyBarSettings.scale.x * element.level
+                        element.mesh.position.x = proficienyBarSettings.rightPosition.x + (- element.mesh.scale.x * .25)
+                    });
                 }
                 break;
         }
@@ -705,7 +737,7 @@ function main() {
             lerpDelta = 0;
         }
         lerpDelta += 0.005
-        // console.log(lerpDelta)
+
         Menu.position.lerpVectors(lerpOriginalPos, new THREE.Vector3(lerpTargetX, lerpOriginalPos.y, lerpOriginalPos.z), lerpDelta)
         camera.position.x = Menu.position.x
 
