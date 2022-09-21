@@ -1,0 +1,66 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body
+{
+    /* position: fixed; */
+    height: 210vh;
+    width: 100vw;
+    font-family: 'Arial';
+    background: rgb(24,24,24);
+    font-size: 100%;
+    overflow-x: hidden;
+}
+
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    mix-blend-mode: normal;
+}
+
+.container
+{
+    height:100vh;
+    width: 100vw;
+    display: grid;
+    place-items: center;
+}
+
+h1 {
+    font-size: 8vh;
+    text-transform: uppercase;
+    color: white;
+    text-align: center;
+    z-index: 1;
+    mix-blend-mode: exclusion;
+    user-select: none;
+    letter-spacing: 1vw;
+}
+
+.menu {
+    display: grid;
+    place-items: center;
+    user-select: none;
+}
+
+#title {
+    white-space: pre-line;
+}
+
+#scrollimg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 5vh;
+    height: 5vh;
+    transform: scale(1, 1)
+}
+
+/*# sourceMappingURL=main.css.map*/
