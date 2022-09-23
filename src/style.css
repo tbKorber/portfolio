@@ -37,6 +37,17 @@ body
 @font-palette-values --Custom {
     font-family: Nabla;
     base-palette: 4;
+    override-colors:
+        1 darkgray,
+        2 black,
+        3 darkgray,
+        4 darkgray,
+        5 white,
+        6 darkgray,
+        7 white,
+        8 darkgray,
+        9 white
+
 }
 
 h1 {
