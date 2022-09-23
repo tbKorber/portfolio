@@ -34,15 +34,22 @@ body
     pointer-events: none;
 }
 
+@font-palette-values --Custom {
+    font-family: Nabla;
+    base-palette: 4;
+}
+
 h1 {
-    font-size: 8vh;
+    font-family: 'Nabla';
+    font-size: 12vh;
+    font-palette: --Custom;
     text-transform: uppercase;
     color: white;
     text-align: center;
     z-index: 1;
     mix-blend-mode: exclusion;
     user-select: none;
-    letter-spacing: 1vw;
+    letter-spacing: .5vw;
 }
 
 .menu {

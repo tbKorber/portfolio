@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
-import { MathUtils, TextureLoader } from 'three';
+import { TextureLoader } from 'three';
 
 function main() {
 
