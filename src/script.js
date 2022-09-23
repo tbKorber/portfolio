@@ -3,15 +3,30 @@ import * as THREE from 'three';
 import * as dat from 'dat.gui';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
-import { TextureLoader } from 'three';
+import { MathUtils, TextureLoader } from 'three';
 
 function main() {
 
+    function getBaseUrl() {
+        var re = new RegExp(/^.*\//);
+        return re.exec(window.location.href);
+    }
+    const root = getBaseUrl();
+
     // PageStates
     const pageStates = {
-        Showcase: ['Showcase', -5],
-        About: ['Trevor\nKörber', 0],
-        Contact: ['Contact', 5]
+        Showcase: {
+            name: 'Showcase',
+            position: new THREE.Vector3(-10, 0, 0)
+        },
+        About: {
+            name: 'Trevor\nKörber',
+            position: new THREE.Vector3(0, 0, 0)
+        },
+        Contact: {
+            name: 'Contact',
+            position: new THREE.Vector3(10, 0, 0)
+        }
     }
     Object.freeze(pageStates);
     var currentPage = pageStates.About;
@@ -21,7 +36,7 @@ function main() {
     const textureLoader = new TextureLoader();
 
     // Textures
-    const profileTexture = textureLoader.load('/textures/selfie.jpg');
+    const profileTexture = textureLoader.load(root + 'resources/textures/selfie.jpg');
 
     // Debug
     //const gui = new dat.GUI();
@@ -40,7 +55,7 @@ function main() {
     const logoMeshs = {
         DexLabLogo: {
             // Resource URL
-            glb: '/models/DexLab_LOGO.glb',
+            glb: root + 'resources/models/DexLab_LOGO.glb',
             // Worldspace Position
             position: new THREE.Vector3(.8,-3.3, 0),
             // Scale * logoScale (Increase logoScale to increase all logos)
@@ -53,7 +68,7 @@ function main() {
             mesh: null
         },
         MagesLogo: {
-            glb: '/models/MAGES_Logo.glb',
+            glb: root + 'resources/models/MAGES_Logo.glb',
             position: new THREE.Vector3(-1.7,-3.3,0),
             scale: new THREE.Vector3(0.2, 0.08, 0.2),
             rotation: new THREE.Vector3(90, 0, 0),
@@ -76,6 +91,8 @@ function main() {
                 element.mesh.rotation.y = THREE.MathUtils.degToRad(element.rotation.y);
                 element.mesh.rotation.z = THREE.MathUtils.degToRad(element.rotation.z);
                 element.mesh.children[0].material.color = element.color;
+                element.mesh.children[0].material.metalness = 0.9,
+                element.mesh.children[0].material.roughness = 0.4,
                 scene.add(element.mesh);
             }
         )
@@ -117,9 +134,9 @@ function main() {
     );
 
     const shapeMaterial = new THREE.MeshStandardMaterial({
-        color: 0x444444,
-        metalness: 0.7,
-        roughness: 0.7
+        color: 0x777777,
+        metalness: 1,
+        roughness: 0.5
     })
 
     const transparentMat = new THREE.MeshStandardMaterial({
@@ -144,7 +161,7 @@ function main() {
     profileMesh.scale.set(0.4, 0.4, 0.4)
 
     const Menu = new THREE.Mesh(marker, transparentMat);
-    Menu.position.set(0, 1.35, 0);
+    Menu.position.set(0, 1.2, .3);
     Menu.scale.set(0.05, 0.05, 0.05);
 
     const TextBody = new THREE.Mesh(marker, transparentMat);
@@ -160,8 +177,8 @@ function main() {
 
     // Lights
     
-    const pointLight = new THREE.PointLight(0x888888, 2)
-    pointLight.position.set(2,2.3,0.85)
+    const pointLight = new THREE.PointLight(0xFFFFFF, 2)
+    pointLight.position.set(0,2.3,0.85)
     pointLight.intensity = 2
     scene.add(pointLight)
     
@@ -169,6 +186,9 @@ function main() {
     pointLight2.position.set(-2,-6.5, 5)
     pointLight2.intensity = 1.2
     scene.add(pointLight2)
+
+    const ambientLight = new THREE.AmbientLight(0xFFFFFF, .3)
+    scene.add(ambientLight)
 
     const pointlightHelper = new THREE.PointLightHelper(pointLight2, 1)
     scene.add(pointlightHelper)
@@ -252,7 +272,7 @@ function main() {
     }
     
     let title = document.getElementById("title");
-    title.textContent = pageStates.About[0];
+    title.textContent = pageStates.About.name;
 
     document.addEventListener('keypress', function ( event ) {
         switch(event.code){
@@ -287,14 +307,38 @@ function main() {
         }
     })
 
+    const KeyAMenuDiv = document.createElement( 'div' );
+    KeyAMenuDiv.className = 'menu';
+    KeyAMenuDiv.textContent = '[A]';
+    KeyAMenuDiv.style.marginTop = '1em';
+    KeyAMenuDiv.style.fontSize = '2.5vh';
+    KeyAMenuDiv.style.color = menuStyles.Color.inactive;
+    KeyAMenuDiv.style.fontWeight = menuStyles.Weight.inactive;
+    KeyAMenuDiv.style.background = 'black';
+    KeyAMenuDiv.style.padding = '.3em';
+    const KeyAMenuLabel = new CSS2DObject( KeyAMenuDiv );
+    KeyAMenuLabel.position.set(
+        pageStates.Showcase.position.x - 8,
+        pageStates.Showcase.position.y,
+        pageStates.Showcase.position.z
+        );
+    Menu.add( KeyAMenuLabel )
+
     const showcaseMenuDiv = document.createElement( 'div' );
     showcaseMenuDiv.className = 'menu';
     showcaseMenuDiv.textContent = 'SHOWCASE';
     showcaseMenuDiv.style.marginTop = '1em';
-    showcaseMenuDiv.style.fontSize = "2.5vh"
+    showcaseMenuDiv.style.fontSize = '2.5vh'
     showcaseMenuDiv.style.color = menuStyles.Color.inactive;
+    showcaseMenuDiv.style.fontWeight = menuStyles.Weight.inactive;
+    showcaseMenuDiv.style.background = 'black';
+    showcaseMenuDiv.style.padding = '.3em';
     const showcaseMenuLabel = new CSS2DObject( showcaseMenuDiv );
-    showcaseMenuLabel.position.set( -10, 0, 0);
+    showcaseMenuLabel.position.set(
+        pageStates.Showcase.position.x,
+        pageStates.Showcase.position.y,
+        pageStates.Showcase.position.z
+        );
     Menu.add( showcaseMenuLabel )
     showcaseMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
@@ -313,11 +357,17 @@ function main() {
     aboutMenuDiv.className = 'menu';
     aboutMenuDiv.textContent = 'ABOUT';
     aboutMenuDiv.style.marginTop = '1em';
-    aboutMenuDiv.style.fontSize = "2.5vh"
+    aboutMenuDiv.style.fontSize = '2.5vh';
     aboutMenuDiv.style.color = menuStyles.Color.active;
     aboutMenuDiv.style.fontWeight = menuStyles.Weight.active;
+    aboutMenuDiv.style.background = 'black';
+    aboutMenuDiv.style.padding = '.3em';
     const aboutMenuLabel = new CSS2DObject( aboutMenuDiv );
-    aboutMenuLabel.position.set(0, 0, 0);
+    aboutMenuLabel.position.set(
+        pageStates.About.position.x,
+        pageStates.About.position.y,
+        pageStates.About.position.z
+        );
     Menu.add( aboutMenuLabel )
     aboutMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
@@ -337,10 +387,17 @@ function main() {
     contactMenuDiv.className = 'menu';
     contactMenuDiv.textContent = 'CONTACT';
     contactMenuDiv.style.marginTop = '1em';
-    contactMenuDiv.style.fontSize = "2.5vh"
+    contactMenuDiv.style.fontSize = '2.5vh';
     contactMenuDiv.style.color = menuStyles.Color.inactive;
+    contactMenuDiv.style.fontWeight = menuStyles.Weight.inactive;
+    contactMenuDiv.style.background = 'black';
+    contactMenuDiv.style.padding = '.3em';
     const contactMenuLabel = new CSS2DObject( contactMenuDiv );
-    contactMenuLabel.position.set(10, 0, 0);
+    contactMenuLabel.position.set(
+        pageStates.Contact.position.x,
+        pageStates.Contact.position.y,
+        pageStates.Contact.position.z
+        );
     Menu.add( contactMenuLabel )
     contactMenuDiv.addEventListener('pointerdown', () => {
         // Function runs when clicked on Menu item
@@ -354,6 +411,24 @@ function main() {
         // Leave Hover
         pointerHover(false, contactMenuDiv, pageStates.Contact)
     })
+
+    const KeyDMenuDiv = document.createElement( 'div' );
+    KeyDMenuDiv.className = 'menu';
+    KeyDMenuDiv.textContent = '[D]';
+    KeyDMenuDiv.title = 'Navigate Right'
+    KeyDMenuDiv.style.marginTop = '1em';
+    KeyDMenuDiv.style.fontSize = '2.5vh'
+    KeyDMenuDiv.style.color = menuStyles.Color.inactive;
+    KeyDMenuDiv.style.fontWeight = menuStyles.Weight.inactive;
+    KeyDMenuDiv.style.background = 'black';
+    KeyDMenuDiv.style.padding = '.3em';
+    const KeyDMenuLabel = new CSS2DObject( KeyDMenuDiv );
+    KeyDMenuLabel.position.set(
+        pageStates.Contact.position.x + 8,
+        pageStates.Contact.position.y,
+        pageStates.Contact.position.z
+        );
+    Menu.add( KeyDMenuLabel )
 
     function pointerHover(enter, div, state){
         if(enter){
@@ -373,8 +448,8 @@ function main() {
 
     function NavigateMenu(page, div){
         currentPage = page;
-        console.log(currentPage[0]);
-        title.textContent = currentPage[0]
+        console.log(currentPage.name);
+        title.textContent = currentPage.name
         menuDivs.forEach(element => {
             element.style.color = menuStyles.Color.inactive;
             element.style.fontWeight = menuStyles.Weight.inactive;
@@ -383,7 +458,7 @@ function main() {
         div.style.fontWeight = menuStyles.Weight.active;
 
         lerpLoop = false;
-        lerpTargetX = currentPage[1];
+        lerpTargetX = currentPage.position.x;
         LerpMenu();
     }
 
@@ -642,6 +717,7 @@ function main() {
     let scrollY = window.scrollY;
 
     const pageMarkers = {
+        header: 300,
         aboutMe: 476,
         proficiency: {
             start: 600,
@@ -649,13 +725,19 @@ function main() {
         }
     }
 
+    let header = document.getElementsByTagName('h1')[0];
+
     window.addEventListener('scroll', () => {
         scrollY = window.scrollY;
         
         let scrollRate = scrollY * 0.005
         camera.position.y = - scrollRate
+
+        Menu.position.y = camera.position.y + 1.2
+
+        header.style.opacity = 1 - (scrollY / pageMarkers.header)
         
-        console.log(scrollY)
+        // console.log(scrollY)
 
         switch(currentPage){
             case pageStates.About:
