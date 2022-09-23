@@ -310,6 +310,7 @@ function main() {
     const KeyAMenuDiv = document.createElement( 'div' );
     KeyAMenuDiv.className = 'menu';
     KeyAMenuDiv.textContent = '[A]';
+    KeyDMenuDiv.title = 'Navigate Left';
     KeyAMenuDiv.style.marginTop = '1em';
     KeyAMenuDiv.style.fontSize = '2.5vh';
     KeyAMenuDiv.style.color = menuStyles.Color.inactive;
@@ -415,9 +416,9 @@ function main() {
     const KeyDMenuDiv = document.createElement( 'div' );
     KeyDMenuDiv.className = 'menu';
     KeyDMenuDiv.textContent = '[D]';
-    KeyDMenuDiv.title = 'Navigate Right'
+    KeyDMenuDiv.title = 'Navigate Right';
     KeyDMenuDiv.style.marginTop = '1em';
-    KeyDMenuDiv.style.fontSize = '2.5vh'
+    KeyDMenuDiv.style.fontSize = '2.5vh';
     KeyDMenuDiv.style.color = menuStyles.Color.inactive;
     KeyDMenuDiv.style.fontWeight = menuStyles.Weight.inactive;
     KeyDMenuDiv.style.background = 'black';
