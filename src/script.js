@@ -310,7 +310,7 @@ function main() {
     const KeyAMenuDiv = document.createElement( 'div' );
     KeyAMenuDiv.className = 'menu';
     KeyAMenuDiv.textContent = '[A]';
-    KeyDMenuDiv.title = 'Navigate Left';
+    KeyAMenuDiv.title = 'Navigate Left';
     KeyAMenuDiv.style.marginTop = '1em';
     KeyAMenuDiv.style.fontSize = '2.5vh';
     KeyAMenuDiv.style.color = menuStyles.Color.inactive;
