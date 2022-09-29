@@ -8,7 +8,7 @@ html,
 body
 {
     /* position: fixed; */
-    height: 210vh;
+    height: 250vh;
     width: 100vw;
     font-family: 'Arial';
     background: rgb(24,24,24);
@@ -31,17 +31,36 @@ body
     width: 100vw;
     display: grid;
     place-items: center;
+    pointer-events: none;
+}
+
+@font-palette-values --Custom {
+    font-family: Nabla;
+    base-palette: 4;
+    override-colors:
+        1 darkgray,
+        2 black,
+        3 darkgray,
+        4 darkgray,
+        5 white,
+        6 darkgray,
+        7 white,
+        8 darkgray,
+        9 white
+
 }
 
 h1 {
-    font-size: 8vh;
+    font-family: 'Nabla';
+    font-size: 12vh;
+    font-palette: --Custom;
     text-transform: uppercase;
     color: white;
     text-align: center;
     z-index: 1;
     mix-blend-mode: exclusion;
     user-select: none;
-    letter-spacing: 1vw;
+    letter-spacing: .5vw;
 }
 
 .menu {
