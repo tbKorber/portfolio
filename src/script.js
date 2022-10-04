@@ -71,7 +71,7 @@ function main() {
             glb: root + 'resources/models/MAGES_Logo.glb',
             position: new THREE.Vector3(-1.7,-3.3,0),
             scale: new THREE.Vector3(0.2, 0.08, 0.2),
-            rotation: new THREE.Vector3(90, 0, 0),
+            rotation: new THREE.Vector3(0, 0, 0),
             color: new THREE.Color('white'),
             mesh: null
         }
