@@ -118,7 +118,7 @@ function main() {
 
     // DO NOT TOUCH
     Object.values(logoMeshs).forEach(element => {
-        console.log(element)
+        // console.log(element) 
 
         asyncLoadModels(element)
         // gltfLoader.load(
@@ -347,7 +347,7 @@ function main() {
                 }
                 break
             case 'KeyT':
-                console.log(scene)
+                // console.log(scene)
                 break
         }
     })
@@ -494,7 +494,7 @@ function main() {
 
     function NavigateMenu(page, div){
         currentPage = page
-        console.log(currentPage.name)
+        // console.log(currentPage.name)
         title.textContent = currentPage.name
         menuDivs.forEach(element => {
             element.style.color = menuStyles.Color.inactive
