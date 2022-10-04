@@ -611,7 +611,7 @@ function main() {
             )
         },
         UnrealEngine: {
-            level: 3,
+            level: 4,
             mesh: new THREE.Mesh(
                 proficiencyGeometry,
                 new THREE.MeshStandardMaterial({
@@ -620,7 +620,7 @@ function main() {
             )
         },
         ThreeJS: {
-            level: 2,
+            level: 3,
             mesh: new THREE.Mesh(
                 proficiencyGeometry,
                 new THREE.MeshStandardMaterial({
