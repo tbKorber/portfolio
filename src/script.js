@@ -74,7 +74,7 @@ function main() {
             glb: root + 'resources/models/MAGES_Logo.glb',
             position: [-1.7,-3.3,0],
             scale: [0.2, 0.2, 0.1],
-            rotation: [180, 0, 0],
+            rotation: [0, 0, 0],
             color: 'ffffff',
             mesh: null
         }
