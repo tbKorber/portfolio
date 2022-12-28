@@ -17,15 +17,18 @@ function main() {
     const pageStates = {
         Showcase: {
             name: 'Showcase',
-            position: new THREE.Vector3(-10, 0, 0)
+            position: new THREE.Vector3(-10, 0, 0),
+            bodyheight: 150
         },
         About: {
             name: 'Trevor\nKörber',
-            position: new THREE.Vector3(0, 0, 0)
+            position: new THREE.Vector3(0, 0, 0),
+            bodyheight: 210
         },
         Contact: {
             name: 'Contact',
-            position: new THREE.Vector3(10, 0, 0)
+            position: new THREE.Vector3(10, 0, 0),
+            bodyheight: 150
         }
     }
     Object.freeze(pageStates)
@@ -505,6 +508,8 @@ function main() {
 
         lerpLoop = false
         lerpTargetX = currentPage.position.x
+
+        document.querySelector('body').style.height = page.bodyheight + 'vh'
         LerpMenu()
     }
 
