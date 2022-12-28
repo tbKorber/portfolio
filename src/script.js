@@ -701,7 +701,7 @@ function main() {
             }
         },
         ShadingProf: {
-            TextContent: 'Shading',
+            TextContent: 'Shaders',
             Position: {
                 x: -12,
                 y: -16,
@@ -734,7 +734,8 @@ function main() {
         },
     }
 
-    function MakeProficiencies( div, label, prof ) {
+    function MakeProficiencies( prof ) {
+        let div = document.createElement( 'div' )
         div.className = 'proficiencybody'
         div.textContent = prof.TextContent
         div.style.marginTop = '1em'
@@ -743,39 +744,14 @@ function main() {
         div.style.textAlign = 'left'
         div.style.textTransform = 'uppercase'
         div.style.background = 'black'
+        let label = new CSS2DObject( div )
         label.position.set(prof.Position.x, prof.Position.y, prof.Position.z)
         ProficiencyBody.add( label )
     }
 
-    const aboutProfProgrammingDiv = document.createElement( 'div' )
-    const aboutProfProgrammingLabel = new CSS2DObject( aboutProfProgrammingDiv )
-
-    MakeProficiencies(aboutProfProgrammingDiv, aboutProfProgrammingLabel, divProficiencies.ProgrammingProf)
-
-    const aboutProfDesignDiv = document.createElement( 'div' )
-    const aboutProfDesignLabel = new CSS2DObject( aboutProfDesignDiv )
-
-    MakeProficiencies(aboutProfDesignDiv, aboutProfDesignLabel, divProficiencies.DesignProf)
-
-    const aboutProfShadingDiv = document.createElement( 'div' )
-    const aboutProfShadingLabel = new CSS2DObject( aboutProfShadingDiv )
-
-    MakeProficiencies(aboutProfShadingDiv, aboutProfShadingLabel, divProficiencies.ShadingProf)
-
-    const aboutProfUnityDiv = document.createElement( 'div' )
-    const aboutProfUnityLabel = new CSS2DObject( aboutProfUnityDiv )
-
-    MakeProficiencies(aboutProfUnityDiv, aboutProfUnityLabel, divProficiencies.UnityEngineProf)
-
-    const aboutProfUnrealDiv = document.createElement( 'div' )
-    const aboutProfUnrealLabel = new CSS2DObject( aboutProfUnrealDiv )
-
-    MakeProficiencies(aboutProfUnrealDiv, aboutProfUnrealLabel, divProficiencies.UnrealEngineProf)
-
-    const aboutProfThreeDiv = document.createElement( 'div' )
-    const aboutProfThreeLabel = new CSS2DObject( aboutProfThreeDiv )
-
-    MakeProficiencies(aboutProfThreeDiv, aboutProfThreeLabel, divProficiencies.ThreeJSProf)
+    Object.values(divProficiencies).forEach( element => {
+        MakeProficiencies(element)
+    })
 
     //
     // Listeners
