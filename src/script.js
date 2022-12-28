@@ -683,83 +683,99 @@ function main() {
     gridHelperRight.position.set(20,-10,0)
     ProficiencyBody.add(gridHelperRight)
 
+    const divProficiencies = {
+        ProgrammingProf: {
+            TextContent: 'Programming',
+            Position: {
+                x: -12,
+                y: 0,
+                z: 0
+            }
+        },
+        DesignProf: {
+            TextContent: 'Design',
+            Position: {
+                x: -12,
+                y: -8,
+                z: 0
+            }
+        },
+        ShadingProf: {
+            TextContent: 'Shading',
+            Position: {
+                x: -12,
+                y: -16,
+                z: 0
+            }
+        },
+        UnityEngineProf: {
+            TextContent: 'Unity Engine',
+            Position: {
+                x: 12,
+                y: 0,
+                z: 0
+            }
+        },
+        UnrealEngineProf: {
+            TextContent: 'Unreal Engine',
+            Position: {
+                x: 12,
+                y: -8,
+                z: 0
+            }
+        },
+        ThreeJSProf: {
+            TextContent: 'ThreeJS',
+            Position: {
+                x: 12,
+                y: -16,
+                z: 0
+            }
+        },
+    }
+
+    function MakeProficiencies( div, label, prof ) {
+        div.className = 'proficiencybody'
+        div.textContent = prof.TextContent
+        div.style.marginTop = '1em'
+        div.style.fontSize = '3vh'
+        div.style.color = 'white'
+        div.style.textAlign = 'left'
+        div.style.textTransform = 'uppercase'
+        div.style.background = 'black'
+        label.position.set(prof.Position.x, prof.Position.y, prof.Position.z)
+        ProficiencyBody.add( label )
+    }
+
     const aboutProfProgrammingDiv = document.createElement( 'div' )
-    aboutProfProgrammingDiv.className = 'proficiencybody'
-    aboutProfProgrammingDiv.textContent = "Programming"
-    aboutProfProgrammingDiv.style.marginTop = '1em'
-    aboutProfProgrammingDiv.style.fontSize = '3vh'
-    aboutProfProgrammingDiv.style.color = 'white'
-    aboutProfProgrammingDiv.style.textAlign = 'left'
-    aboutProfProgrammingDiv.style.textTransform = 'uppercase'
-    aboutProfProgrammingDiv.style.background = 'black'
     const aboutProfProgrammingLabel = new CSS2DObject( aboutProfProgrammingDiv )
-    aboutProfProgrammingLabel.position.set(-12, 0, 0)
-    ProficiencyBody.add( aboutProfProgrammingLabel )
+
+    MakeProficiencies(aboutProfProgrammingDiv, aboutProfProgrammingLabel, divProficiencies.ProgrammingProf)
 
     const aboutProfDesignDiv = document.createElement( 'div' )
-    aboutProfDesignDiv.className = 'proficiencybody'
-    aboutProfDesignDiv.textContent = "Design"
-    aboutProfDesignDiv.style.marginTop = '1em'
-    aboutProfDesignDiv.style.fontSize = '3vh'
-    aboutProfDesignDiv.style.color = 'white'
-    aboutProfDesignDiv.style.textAlign = 'left'
-    aboutProfDesignDiv.style.textTransform = 'uppercase'
-    aboutProfDesignDiv.style.background = 'black'
     const aboutProfDesignLabel = new CSS2DObject( aboutProfDesignDiv )
-    aboutProfDesignLabel.position.set(-12, -8, 0)
-    ProficiencyBody.add( aboutProfDesignLabel )
+
+    MakeProficiencies(aboutProfDesignDiv, aboutProfDesignLabel, divProficiencies.DesignProf)
 
     const aboutProfShadingDiv = document.createElement( 'div' )
-    aboutProfShadingDiv.className = 'proficiencybody'
-    aboutProfShadingDiv.textContent = "Shading"
-    aboutProfShadingDiv.style.marginTop = '1em'
-    aboutProfShadingDiv.style.fontSize = '3vh'
-    aboutProfShadingDiv.style.color = 'white'
-    aboutProfShadingDiv.style.textAlign = 'left'
-    aboutProfShadingDiv.style.textTransform = 'uppercase'
-    aboutProfShadingDiv.style.background = 'black'
     const aboutProfShadingLabel = new CSS2DObject( aboutProfShadingDiv )
-    aboutProfShadingLabel.position.set(-12, -16, 0)
-    ProficiencyBody.add( aboutProfShadingLabel )
+
+    MakeProficiencies(aboutProfShadingDiv, aboutProfShadingLabel, divProficiencies.ShadingProf)
 
     const aboutProfUnityDiv = document.createElement( 'div' )
-    aboutProfUnityDiv.className = 'proficiencybody'
-    aboutProfUnityDiv.textContent = "Unity Engine"
-    aboutProfUnityDiv.style.marginTop = '1em'
-    aboutProfUnityDiv.style.fontSize = '3vh'
-    aboutProfUnityDiv.style.color = 'white'
-    aboutProfUnityDiv.style.textAlign = 'left'
-    aboutProfUnityDiv.style.textTransform = 'uppercase'
-    aboutProfUnityDiv.style.background = 'black'
     const aboutProfUnityLabel = new CSS2DObject( aboutProfUnityDiv )
-    aboutProfUnityLabel.position.set(12, 0, 0)
-    ProficiencyBody.add( aboutProfUnityLabel )
+
+    MakeProficiencies(aboutProfUnityDiv, aboutProfUnityLabel, divProficiencies.UnityEngineProf)
 
     const aboutProfUnrealDiv = document.createElement( 'div' )
-    aboutProfUnrealDiv.className = 'proficiencybody'
-    aboutProfUnrealDiv.textContent = "Unreal Engine"
-    aboutProfUnrealDiv.style.marginTop = '1em'
-    aboutProfUnrealDiv.style.fontSize = '3vh'
-    aboutProfUnrealDiv.style.color = 'white'
-    aboutProfUnrealDiv.style.textAlign = 'left'
-    aboutProfUnrealDiv.style.textTransform = 'uppercase'
-    aboutProfUnrealDiv.style.background = 'black'
     const aboutProfUnrealLabel = new CSS2DObject( aboutProfUnrealDiv )
-    aboutProfUnrealLabel.position.set(12, -8, 0)
-    ProficiencyBody.add( aboutProfUnrealLabel )
+
+    MakeProficiencies(aboutProfUnrealDiv, aboutProfUnrealLabel, divProficiencies.UnrealEngineProf)
 
     const aboutProfThreeDiv = document.createElement( 'div' )
-    aboutProfThreeDiv.className = 'proficiencybody'
-    aboutProfThreeDiv.textContent = "ThreeJS"
-    aboutProfThreeDiv.style.marginTop = '1em'
-    aboutProfThreeDiv.style.fontSize = '3vh'
-    aboutProfThreeDiv.style.color = 'white'
-    aboutProfThreeDiv.style.textAlign = 'left'
-    aboutProfThreeDiv.style.textTransform = 'uppercase'
-    aboutProfThreeDiv.style.background = 'black'
     const aboutProfThreeLabel = new CSS2DObject( aboutProfThreeDiv )
-    aboutProfThreeLabel.position.set(12, -16, 0)
-    ProficiencyBody.add( aboutProfThreeLabel )
+
+    MakeProficiencies(aboutProfThreeDiv, aboutProfThreeLabel, divProficiencies.ThreeJSProf)
 
     //
     // Listeners
