@@ -888,8 +888,9 @@ function main() {
         switch(currentPage){
             case pageStates.About:
                 if(shape){
-                    shape.rotation.y += .2 * (targetX - shape.rotation.y)
-                    shape.rotation.x += .02 * (targetY - shape.rotation.x)
+                    // shape.rotation.y += (.2 * (targetX - shape.rotation.y)) + .1
+                    shape.rotation.y += .003
+                    shape.rotation.x += (.05 * (targetY - shape.rotation.x)) +.01
                     shape.position.z = -(1.8 * targetY) - .5;
         
                     // shape.position.x = .5 * targetX
